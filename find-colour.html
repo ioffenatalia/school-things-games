@@ -3,6 +3,7 @@
 <head>
     <title>Colour Game</title>
     <style>
+        /* Весь ваш CSS стиль остается БЕЗ изменений */
         * {
             margin: 0;
             padding: 0;
@@ -20,320 +21,68 @@
             overflow: hidden;
         }
         
-        .container {
-            width: 100%;
-            max-width: 800px;
-            height: 95vh;
-            background: white;
-            border-radius: 25px;
-            padding: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        /* ... весь остальной CSS стиль ... */
+        
+        /* ДОБАВЬТЕ ЭТИ СТИЛИ В КОНЕЦ */
+        /* Стиль для кнопки включения звука */
+        .sound-warning {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-        }
-        
-        /* ЗАГОЛОВОК */
-        .header {
-            flex-shrink: 0;
-            margin-bottom: 8px;
-        }
-        
-        h1 {
-            color: #ff6b6b;
-            font-size: 28px;
-            margin: 0;
-            text-shadow: 2px 2px 0 #ffd166;
-        }
-        
-        #instruction {
-            font-size: 20px;
-            color: #333;
-            margin: 8px 0;
-            padding: 8px;
-            background: #f0f7ff;
-            border-radius: 10px;
-            border: 2px solid #6a89cc;
-        }
-        
-        /* КНОПКА ДИНАМИКА И СЧЕТЧИК - КОМПАКТНЕЕ */
-        .top-controls {
-            flex-shrink: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin: 8px 0;
-        }
-        
-        .speaker-btn {
-            background: #4CAF50;
-            border: none;
-            border-radius: 50%;
-            width: 65px;
-            height: 65px;
-            font-size: 32px;
-            cursor: pointer;
-            color: white;
-            transition: transform 0.2s;
-            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
-        }
-        
-        .speaker-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .counter {
-            font-size: 22px;
-            color: #6a89cc;
-            font-weight: bold;
-            background: #f0f7ff;
-            padding: 8px 18px;
-            border-radius: 18px;
-            border: 3px solid #dbe4ff;
-            box-shadow: 0 4px 12px rgba(106, 137, 204, 0.2);
-        }
-        
-        /* ПРЕДМЕТЫ - УМЕНЬШИЛИ НА 10% */
-        .items-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 0;
-            margin: 5px 0;
-        }
-        
-        .items-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 12px;
-            height: 100%;
-            padding: 8px;
-        }
-        
-        .colour-item {
-            background: white;
+            padding: 15px;
             border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 5px solid; /* Уменьшили с 6px */
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+            display: none; /* Сначала скрыта */
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            width: 90%;
+            max-width: 400px;
         }
         
-        .colour-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        
-        .colour-item img {
-            width: 70px; /* Было 80px */
-            height: 70px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-        
-        .item-name {
-            font-size: 16px; /* Было 18px */
-            font-weight: bold;
-            color: #333;
-        }
-        
-        /* СООБЩЕНИЯ - КОМПАКТНЕЕ */
-        .messages-container {
-            flex-shrink: 0;
-            min-height: 60px;
-            margin: 5px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .message {
-            font-size: 22px; /* Было 26px */
-            padding: 10px 18px;
-            border-radius: 12px;
-            margin: 4px auto;
-            display: none;
-            max-width: 350px;
-            animation: messageAppear 0.3s;
-        }
-        
-        .correct-message {
-            background: #4CAF50;
-            color: white;
-            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
-        }
-        
-        .wrong-message {
-            background: #ff6b6b;
-            color: white;
-            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
-        }
-        
-        /* КНОПКА МЕНЮ - МЕНЬШЕ И НИЖЕ */
-        .menu-btn {
-            background: #ff9e00;
-            color: white;
+        .sound-warning button {
+            background: white;
+            color: #4CAF50;
             border: none;
-            border-radius: 20px;
             padding: 10px 25px;
+            border-radius: 25px;
             font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
             cursor: pointer;
-            margin: 5px 0 3px 0;
-            transition: transform 0.2s;
-            box-shadow: 0 6px 15px rgba(255, 158, 0, 0.4);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-shrink: 0;
+            transition: transform 0.3s;
         }
         
-        .menu-btn:hover {
+        .sound-warning button:hover {
             transform: scale(1.05);
-            background: #ff8c00;
-        }
-        
-        /* АНИМАЦИИ */
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .bounce {
-            animation: bounce 0.5s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        /* МЕДИА-ЗАПРОСЫ */
-        @media (max-height: 700px) {
-            .container {
-                height: 98vh;
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            #instruction {
-                font-size: 18px;
-                padding: 6px;
-            }
-            
-            .colour-item img {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .items-grid {
-                gap: 10px;
-                padding: 6px;
-            }
-            
-            .speaker-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 28px;
-            }
-            
-            .counter {
-                font-size: 20px;
-                padding: 6px 15px;
-            }
-            
-            .message {
-                font-size: 20px;
-                padding: 8px 15px;
-            }
-            
-            .menu-btn {
-                padding: 8px 20px;
-                font-size: 16px;
-            }
         }
         
         @media (max-width: 600px) {
-            .container {
-                border-radius: 20px;
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .items-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                gap: 10px;
-            }
-            
-            .colour-item {
-                padding: 8px;
-                border-width: 4px;
-            }
-            
-            .colour-item img {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .item-name {
+            .sound-warning {
+                top: 10px;
+                padding: 12px;
                 font-size: 14px;
             }
-        }
-        
-        @media (max-width: 400px) {
-            h1 {
-                font-size: 22px;
-            }
             
-            #instruction {
+            .sound-warning button {
+                padding: 8px 20px;
                 font-size: 16px;
-            }
-            
-            .colour-item img {
-                width: 55px;
-                height: 55px;
-            }
-            
-            .items-grid {
-                gap: 8px;
-                padding: 5px;
-            }
-            
-            .speaker-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 26px;
-            }
-            
-            .top-controls {
-                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- ДОБАВЬТЕ ЭТОТ БЛОК САМЫМ ПЕРВЫМ В BODY -->
+    <div class="sound-warning" id="soundWarning">
+        <div style="font-size: 20px; margin-bottom: 8px;">🔊 Внимание для телефона!</div>
+        <div style="margin-bottom: 10px;">Для работы звука нужно сначала нажать кнопку:</div>
+        <button onclick="enableSound()">👉 Включить звук 👈</button>
+        <div style="margin-top: 10px; font-size: 14px; opacity: 0.9;">(Сделайте это один раз в начале игры)</div>
+    </div>
+    
     <div class="container">
         <!-- ВЕРХНЯЯ ЧАСТЬ -->
         <div class="header">
@@ -358,12 +107,16 @@
         <div class="messages-container">
             <div class="message correct-message" id="correctMessage">🎉 Excellent!</div>
             <div class="message wrong-message" id="wrongMessage">❌ Try again!</div>
- <button class="menu-btn" onclick="window.location.href='index.html'">
-    🏠 Menu
-</button>
+            <button class="menu-btn" onclick="window.location.href='index.html'">
+                🏠 Menu
+            </button>
+        </div>
     </div>
 
     <script>
+        // ====== ВАЖНО: ПЕРЕМЕННАЯ ДЛЯ ТЕЛЕФОНА ======
+        let soundEnabled = false; // На телефоне звук сначала выключен
+        
         // ДАННЫЕ
         const colours = [
             { name: 'PINK', value: '#ff9eb5', audio: 'pink' },
@@ -395,16 +148,92 @@
         const correctMessage = document.getElementById('correctMessage');
         const wrongMessage = document.getElementById('wrongMessage');
         const scoreEl = document.getElementById('score');
+        const soundWarning = document.getElementById('soundWarning');
 
-        // ОЗВУЧКА
+        // ====== ВКЛЮЧЕНИЕ ЗВУКА ДЛЯ ТЕЛЕФОНА ======
+        function enableSound() {
+            soundEnabled = true;
+            soundWarning.style.display = 'none';
+            
+            // Пробуем проиграть тестовое слово
+            speak("Sound enabled!");
+            
+            // Показываем сообщение на 2 секунды
+            const message = document.createElement('div');
+            message.innerHTML = '✅ Звук включен! Можно играть.';
+            message.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #4CAF50;
+                color: white;
+                padding: 15px 30px;
+                border-radius: 20px;
+                z-index: 1000;
+                font-size: 18px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            `;
+            document.body.appendChild(message);
+            setTimeout(() => message.remove(), 2000);
+        }
+
+        // ====== ИСПРАВЛЕННАЯ ФУНКЦИЯ ОЗВУЧКИ ======
         function speak(text) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.7;
-            utterance.pitch = 1.0;
-            utterance.onend = () => canInteract = true;
-            window.speechSynthesis.speak(utterance);
+            // Если звук не включен на телефоне
+            if (!soundEnabled && isMobileDevice()) {
+                console.log("Звук отключен на телефоне. Текст:", text);
+                instructionEl.innerHTML = `Find <strong style="color:${currentColour.value}">${currentColour.audio}</strong> color!`;
+                return;
+            }
+            
+            // Отменяем предыдущую речь
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
+            // Проверяем поддержку speechSynthesis
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.7;
+                utterance.pitch = 1.0;
+                utterance.onend = () => canInteract = true;
+                utterance.onerror = (e) => {
+                    console.error("Speech synthesis error:", e);
+                    canInteract = true;
+                    // Fallback: показываем текст
+                    if (text.includes("Find")) {
+                        const colorWord = text.replace("Find ", "").replace(".", "");
+                        instructionEl.innerHTML = `Find <strong style="color:${currentColour.value}">${colorWord}</strong> color!`;
+                    }
+                };
+                
+                window.speechSynthesis.speak(utterance);
+            } else {
+                // Если speechSynthesis не поддерживается
+                console.log("Speech synthesis not supported");
+                instructionEl.innerHTML = `Find <strong style="color:${currentColour.value}">${currentColour.audio}</strong> color!`;
+                canInteract = true;
+            }
+        }
+
+        // ====== ПРОВЕРКА ТЕЛЕФОНА ======
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // ====== ПРОВЕРКА ПРИ ЗАГРУЗКЕ ======
+        function checkDeviceAndSound() {
+            if (isMobileDevice()) {
+                // На телефоне показываем предупреждение
+                soundWarning.style.display = 'block';
+                console.log("Мобильное устройство обнаружено, звук отключен по умолчанию");
+            } else {
+                // На компьютере звук включен сразу
+                soundEnabled = true;
+                console.log("Компьютер, звук включен");
+            }
         }
 
         // НОВЫЙ РАУНД
@@ -416,10 +245,18 @@
             
             createAllItems();
             
-            instructionEl.innerHTML = `Listen and find <strong>${currentColour.audio}</strong>!`;
+            // Показываем цвет в тексте как fallback
+            instructionEl.innerHTML = `Find <strong style="color:${currentColour.value}">${currentColour.audio}</strong> color!`;
             
             canInteract = false;
-            setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
+            
+            // Говорим только если звук включен
+            if (soundEnabled) {
+                setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
+            } else {
+                // Если звук выключен, сразу разрешаем взаимодействие
+                setTimeout(() => canInteract = true, 500);
+            }
         }
 
         // СОЗДАТЬ ВСЕ 6 ПРЕДМЕТОВ
@@ -448,6 +285,14 @@
         function handleItemClick(item, itemElement) {
             if (!canInteract) return;
             
+            // Если на телефоне звук не включен, просим включить
+            if (!soundEnabled && isMobileDevice()) {
+                soundWarning.style.display = 'block';
+                itemElement.classList.add('shake');
+                setTimeout(() => itemElement.classList.remove('shake'), 500);
+                return;
+            }
+            
             if (item.colour === currentColour.name) {
                 score++;
                 scoreEl.textContent = score;
@@ -462,10 +307,12 @@
                 correctMessage.style.display = 'block';
                 
                 // Правильное аудио
-                if (item.plural) {
-                    speak(`Yes! The ${item.name} are ${currentColour.audio}!`);
-                } else {
-                    speak(`Yes! The ${item.name} is ${currentColour.audio}!`);
+                if (soundEnabled) {
+                    if (item.plural) {
+                        speak(`Yes! The ${item.name} are ${currentColour.audio}!`);
+                    } else {
+                        speak(`Yes! The ${item.name} is ${currentColour.audio}!`);
+                    }
                 }
                 
                 canInteract = false;
@@ -484,7 +331,9 @@
                 const originalBorder = itemElement.style.borderColor;
                 itemElement.style.borderColor = '#ff4757';
                 
-                speak(`No, try again! Find ${currentColour.audio}.`);
+                if (soundEnabled) {
+                    speak(`No, try again! Find ${currentColour.audio}.`);
+                }
                 
                 setTimeout(() => {
                     wrongMessage.style.display = 'none';
@@ -497,7 +346,15 @@
         // КНОПКА АУДИО
         speakerBtn.onclick = function() {
             if (currentColour) {
-                speak(`Find ${currentColour.audio}.`);
+                // Если на телефоне звук не включен
+                if (!soundEnabled && isMobileDevice()) {
+                    soundWarning.style.display = 'block';
+                    return;
+                }
+                
+                if (soundEnabled) {
+                    speak(`Find ${currentColour.audio}.`);
+                }
                 this.classList.add('bounce');
                 setTimeout(() => this.classList.remove('bounce'), 500);
             }
@@ -513,7 +370,10 @@
         }
 
         // ЗАПУСК
-        window.onload = startNewRound;
+        window.onload = function() {
+            checkDeviceAndSound(); // Сначала проверяем устройство
+            startNewRound(); // Затем запускаем игру
+        };
     </script>
 </body>
 </html>
