@@ -57,7 +57,7 @@
             border: 2px solid #6a89cc;
         }
         
-        /* КНОПКА ДИНАМИКА И СЧЕТЧИК */
+        /* КНОПКА ДИНАМИКА И СЧЕТЧИК - КОМПАКТНЕЕ */
         .top-controls {
             flex-shrink: 0;
             display: flex;
@@ -95,7 +95,7 @@
             box-shadow: 0 4px 12px rgba(106, 137, 204, 0.2);
         }
         
-        /* ПРЕДМЕТЫ */
+        /* ПРЕДМЕТЫ - УМЕНЬШИЛИ НА 10% */
         .items-container {
             flex: 1;
             display: flex;
@@ -123,7 +123,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            border: 5px solid;
+            border: 5px solid; /* Уменьшили с 6px */
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
             padding: 10px;
         }
@@ -134,19 +134,19 @@
         }
         
         .colour-item img {
-            width: 70px;
+            width: 70px; /* Было 80px */
             height: 70px;
             object-fit: contain;
             margin-bottom: 8px;
         }
         
         .item-name {
-            font-size: 16px;
+            font-size: 16px; /* Было 18px */
             font-weight: bold;
             color: #333;
         }
         
-        /* СООБЩЕНИЯ */
+        /* СООБЩЕНИЯ - КОМПАКТНЕЕ */
         .messages-container {
             flex-shrink: 0;
             min-height: 60px;
@@ -158,12 +158,13 @@
         }
         
         .message {
-            font-size: 22px;
+            font-size: 22px; /* Было 26px */
             padding: 10px 18px;
             border-radius: 12px;
             margin: 4px auto;
             display: none;
             max-width: 350px;
+            animation: messageAppear 0.3s;
         }
         
         .correct-message {
@@ -178,7 +179,7 @@
             box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
         }
         
-        /* КНОПКА МЕНЮ */
+        /* КНОПКА МЕНЮ - МЕНЬШЕ И НИЖЕ */
         .menu-btn {
             background: #ff9e00;
             color: white;
@@ -224,33 +225,111 @@
         
         /* МЕДИА-ЗАПРОСЫ */
         @media (max-height: 700px) {
-            .container { height: 98vh; padding: 10px; }
-            h1 { font-size: 24px; }
-            #instruction { font-size: 18px; padding: 6px; }
-            .colour-item img { width: 60px; height: 60px; }
-            .items-grid { gap: 10px; padding: 6px; }
-            .speaker-btn { width: 60px; height: 60px; font-size: 28px; }
-            .counter { font-size: 20px; padding: 6px 15px; }
-            .message { font-size: 20px; padding: 8px 15px; }
-            .menu-btn { padding: 8px 20px; font-size: 16px; }
+            .container {
+                height: 98vh;
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            #instruction {
+                font-size: 18px;
+                padding: 6px;
+            }
+            
+            .colour-item img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .items-grid {
+                gap: 10px;
+                padding: 6px;
+            }
+            
+            .speaker-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            
+            .counter {
+                font-size: 20px;
+                padding: 6px 15px;
+            }
+            
+            .message {
+                font-size: 20px;
+                padding: 8px 15px;
+            }
+            
+            .menu-btn {
+                padding: 8px 20px;
+                font-size: 16px;
+            }
         }
         
         @media (max-width: 600px) {
-            .container { border-radius: 20px; padding: 10px; }
-            h1 { font-size: 24px; }
-            .items-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; }
-            .colour-item { padding: 8px; border-width: 4px; }
-            .colour-item img { width: 60px; height: 60px; }
-            .item-name { font-size: 14px; }
+            .container {
+                border-radius: 20px;
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .colour-item {
+                padding: 8px;
+                border-width: 4px;
+            }
+            
+            .colour-item img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .item-name {
+                font-size: 14px;
+            }
         }
         
         @media (max-width: 400px) {
-            h1 { font-size: 22px; }
-            #instruction { font-size: 16px; }
-            .colour-item img { width: 55px; height: 55px; }
-            .items-grid { gap: 8px; padding: 5px; }
-            .speaker-btn { width: 55px; height: 55px; font-size: 26px; }
-            .top-controls { gap: 10px; }
+            h1 {
+                font-size: 22px;
+            }
+            
+            #instruction {
+                font-size: 16px;
+            }
+            
+            .colour-item img {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .items-grid {
+                gap: 8px;
+                padding: 5px;
+            }
+            
+            .speaker-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 26px;
+            }
+            
+            .top-controls {
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -259,7 +338,7 @@
         <!-- ВЕРХНЯЯ ЧАСТЬ -->
         <div class="header">
             <h1>🎨 Find the Colour!</h1>
-            <div id="instruction">Tap the 🔊 button to start!</div>
+            <div id="instruction">Listen and find the right colour!</div>
         </div>
         
         <!-- КНОПКА И СЧЕТЧИК РЯДОМ -->
@@ -279,8 +358,9 @@
         <div class="messages-container">
             <div class="message correct-message" id="correctMessage">🎉 Excellent!</div>
             <div class="message wrong-message" id="wrongMessage">❌ Try again!</div>
-            <button class="menu-btn" onclick="window.location.href='index.html'">🏠 Menu</button>
-        </div>
+ <button class="menu-btn" onclick="window.location.href='index.html'">
+    🏠 Menu
+</button>
     </div>
 
     <script>
@@ -307,7 +387,6 @@
         let currentColour = null;
         let score = 0;
         let canInteract = true;
-        let isFirstClick = true;
 
         // ЭЛЕМЕНТЫ
         const instructionEl = document.getElementById('instruction');
@@ -317,31 +396,14 @@
         const wrongMessage = document.getElementById('wrongMessage');
         const scoreEl = document.getElementById('score');
 
-        // ПРОСТАЯ ФУНКЦИЯ ОЗВУЧКИ
+        // ОЗВУЧКА
         function speak(text) {
-            // Отменяем предыдущую речь
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-            }
-            
+            window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
-            utterance.rate = 0.8;
-            utterance.volume = 1.0;
-            
-            // Обработчики событий
-            utterance.onstart = () => {
-                canInteract = false;
-            };
-            
-            utterance.onend = () => {
-                canInteract = true;
-            };
-            
-            utterance.onerror = () => {
-                canInteract = true;
-            };
-            
+            utterance.rate = 0.7;
+            utterance.pitch = 1.0;
+            utterance.onend = () => canInteract = true;
             window.speechSynthesis.speak(utterance);
         }
 
@@ -354,20 +416,10 @@
             
             createAllItems();
             
-            instructionEl.innerHTML = `Find <strong>${currentColour.audio.toUpperCase()}</strong>!`;
+            instructionEl.innerHTML = `Listen and find <strong>${currentColour.audio}</strong>!`;
             
             canInteract = false;
-            
-            // Ждем немного и говорим цвет
-            setTimeout(() => {
-                if (isFirstClick) {
-                    // Для первого раза говорим по-другому
-                    speak("Click the speaker button to hear the color");
-                    isFirstClick = false;
-                } else {
-                    speak(`Find ${currentColour.audio}`);
-                }
-            }, 300);
+            setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
         }
 
         // СОЗДАТЬ ВСЕ 6 ПРЕДМЕТОВ
@@ -402,6 +454,8 @@
                 
                 // Анимация предмета
                 itemElement.classList.add('bounce');
+                
+                // Подсветка правильного предмета
                 itemElement.style.boxShadow = `0 0 20px ${item.colourValue}, 0 10px 20px rgba(0,0,0,0.15)`;
                 itemElement.style.borderWidth = '6px';
                 
@@ -421,10 +475,13 @@
                     itemElement.style.boxShadow = '0 6px 15px rgba(0,0,0,0.1)';
                     itemElement.style.borderWidth = '5px';
                     startNewRound();
-                }, 2000);
+                }, 1500);
             } else {
                 wrongMessage.style.display = 'block';
                 itemElement.classList.add('shake');
+                
+                // Красное мигание при ошибке
+                const originalBorder = itemElement.style.borderColor;
                 itemElement.style.borderColor = '#ff4757';
                 
                 speak(`No, try again! Find ${currentColour.audio}.`);
@@ -432,12 +489,12 @@
                 setTimeout(() => {
                     wrongMessage.style.display = 'none';
                     itemElement.classList.remove('shake');
-                    itemElement.style.borderColor = item.colourValue;
-                }, 1500);
+                    itemElement.style.borderColor = originalBorder;
+                }, 1000);
             }
         }
 
-        // КНОПКА АУДИО - ПРОСТАЯ ВЕРСИЯ
+        // КНОПКА АУДИО
         speakerBtn.onclick = function() {
             if (currentColour) {
                 speak(`Find ${currentColour.audio}.`);
@@ -455,13 +512,8 @@
             return array;
         }
 
-        // ЗАПУСК - САМАЯ ПРОСТАЯ ВЕРСИЯ
-        window.onload = function() {
-            // Ждем 0.5 секунды и начинаем
-            setTimeout(() => {
-                startNewRound();
-            }, 500);
-        };
+        // ЗАПУСК
+        window.onload = startNewRound;
     </script>
 </body>
 </html>
