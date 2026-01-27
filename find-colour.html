@@ -203,61 +203,6 @@
             background: #ff8c00;
         }
         
-        /* СТИЛИ ДЛЯ ЭКРАНА ПРИВЕТСТВИЯ */
-        #welcomeScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #ffd166 0%, #ff9e6d 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        
-        .welcome-title {
-            color: white;
-            font-size: 32px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .welcome-text {
-            color: white;
-            font-size: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .welcome-note {
-            color: white;
-            font-size: 16px;
-            opacity: 0.8;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        #enableSoundBtn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 20px 40px;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-        }
-        
-        #enableSoundBtn:hover {
-            transform: scale(1.05);
-            background: #45a049;
-        }
-        
         /* АНИМАЦИИ */
         @keyframes bounce {
             0%, 100% { transform: scale(1); }
@@ -324,14 +269,6 @@
                 padding: 8px 20px;
                 font-size: 16px;
             }
-            
-            .welcome-title {
-                font-size: 28px;
-            }
-            
-            .welcome-text {
-                font-size: 18px;
-            }
         }
         
         @media (max-width: 600px) {
@@ -363,14 +300,6 @@
             .item-name {
                 font-size: 14px;
             }
-            
-            .welcome-title {
-                font-size: 28px;
-            }
-            
-            .welcome-text {
-                font-size: 18px;
-            }
         }
         
         @media (max-width: 400px) {
@@ -401,34 +330,10 @@
             .top-controls {
                 gap: 10px;
             }
-            
-            .welcome-title {
-                font-size: 24px;
-            }
-            
-            .welcome-text {
-                font-size: 16px;
-            }
-            
-            #enableSoundBtn {
-                padding: 15px 30px;
-                font-size: 20px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- ЭКРАН ПРИВЕТСТВИЯ (показывается только на мобильных) -->
-    <div id="welcomeScreen" style="display: none;">
-        <h1 class="welcome-title">🎨 Find the Colour! 🎵</h1>
-        <p class="welcome-text">Welcome to the colour game!</p>
-        <p class="welcome-note">Tap the button below to enable sound<br>and start playing!</p>
-        <button id="enableSoundBtn">
-            🔊 Tap Here to Start with Sound!
-        </button>
-    </div>
-    
-    <!-- ОСНОВНАЯ ИГРА -->
     <div class="container">
         <!-- ВЕРХНЯЯ ЧАСТЬ -->
         <div class="header">
@@ -453,17 +358,13 @@
         <div class="messages-container">
             <div class="message correct-message" id="correctMessage">🎉 Excellent!</div>
             <div class="message wrong-message" id="wrongMessage">❌ Try again!</div>
-            <button class="menu-btn" onclick="window.location.href='index.html'">
-                🏠 Menu
-            </button>
-        </div>
+ <button class="menu-btn" onclick="window.location.href='index.html'">
+    🏠 Menu
+</button>
     </div>
 
     <script>
-        // ==================== НОВЫЕ ПЕРЕМЕННЫЕ ====================
-        let isAudioEnabled = false;
-        
-        // ==================== СТАРЫЕ ПЕРЕМЕННЫЕ ====================
+        // ДАННЫЕ
         const colours = [
             { name: 'PINK', value: '#ff9eb5', audio: 'pink' },
             { name: 'BLUE', value: '#6a89cc', audio: 'blue' },
@@ -482,6 +383,7 @@
             { name: 'glue', image: 'images/glue.png', colour: 'ORANGE', colourValue: '#ff9e00', plural: false }
         ];
 
+        // ПЕРЕМЕННЫЕ
         let currentColour = null;
         let score = 0;
         let canInteract = true;
@@ -493,77 +395,19 @@
         const correctMessage = document.getElementById('correctMessage');
         const wrongMessage = document.getElementById('wrongMessage');
         const scoreEl = document.getElementById('score');
-        const welcomeScreen = document.getElementById('welcomeScreen');
-        const enableSoundBtn = document.getElementById('enableSoundBtn');
 
-        // ==================== ОБНОВЛЕННАЯ ФУНКЦИЯ SPEAK ====================
+        // ОЗВУЧКА
         function speak(text) {
-            // Если звук не включен, показываем подсказку
-            if (!isAudioEnabled) {
-                instructionEl.innerHTML = `Tap the 🔊 button to hear: "${text}"`;
-                instructionEl.style.background = '#fff9c4';
-                instructionEl.style.border = '2px solid #ffd166';
-                return;
-            }
-            
-            // Отменяем любое текущее воспроизведение
             window.speechSynthesis.cancel();
-            
-            // Создаем новое сообщение
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             utterance.rate = 0.7;
             utterance.pitch = 1.0;
-            
-            // Когда речь закончилась
-            utterance.onend = () => {
-                canInteract = true;
-            };
-            
-            // Если есть ошибка
-            utterance.onerror = () => {
-                canInteract = true;
-            };
-            
-            // Произносим
+            utterance.onend = () => canInteract = true;
             window.speechSynthesis.speak(utterance);
         }
 
-        // ==================== ОБНОВЛЕННАЯ КНОПКА SPEAKER ====================
-        speakerBtn.onclick = function() {
-            // Если звук еще не включен, включаем его
-            if (!isAudioEnabled) {
-                isAudioEnabled = true;
-                this.innerHTML = '🔊';
-                instructionEl.style.background = '#f0f7ff';
-                instructionEl.style.border = '2px solid #6a89cc';
-                
-                // Если игра еще не начата, начинаем
-                if (!currentColour) {
-                    startNewRound();
-                } else {
-                    // Если игра уже идет, повторяем текущий цвет
-                    speak(`Find ${currentColour.audio}.`);
-                }
-            } else if (currentColour) {
-                // Если звук уже включен и игра идет
-                speak(`Find ${currentColour.audio}.`);
-            }
-            
-            // Анимация кнопки
-            this.classList.add('bounce');
-            setTimeout(() => this.classList.remove('bounce'), 500);
-        };
-
-        // ==================== КНОПКА ВКЛЮЧЕНИЯ ЗВУКА ====================
-        enableSoundBtn.onclick = function() {
-            isAudioEnabled = true;
-            welcomeScreen.style.display = 'none';
-            speakerBtn.innerHTML = '🔊';
-            startNewRound();
-        };
-
-        // ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений) ====================
+        // НОВЫЙ РАУНД
         function startNewRound() {
             currentColour = colours[Math.floor(Math.random() * colours.length)];
             
@@ -573,13 +417,12 @@
             createAllItems();
             
             instructionEl.innerHTML = `Listen and find <strong>${currentColour.audio}</strong>!`;
-            instructionEl.style.background = '#f0f7ff';
-            instructionEl.style.border = '2px solid #6a89cc';
             
             canInteract = false;
             setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
         }
 
+        // СОЗДАТЬ ВСЕ 6 ПРЕДМЕТОВ
         function createAllItems() {
             itemsGrid.innerHTML = '';
             let shuffledItems = [...items];
@@ -601,6 +444,7 @@
             });
         }
 
+        // КЛИК ПО ПРЕДМЕТУ
         function handleItemClick(item, itemElement) {
             if (!canInteract) return;
             
@@ -650,6 +494,16 @@
             }
         }
 
+        // КНОПКА АУДИО
+        speakerBtn.onclick = function() {
+            if (currentColour) {
+                speak(`Find ${currentColour.audio}.`);
+                this.classList.add('bounce');
+                setTimeout(() => this.classList.remove('bounce'), 500);
+            }
+        };
+
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -658,23 +512,8 @@
             return array;
         }
 
-        // ==================== ЗАПУСК ИГРЫ ====================
-        window.onload = function() {
-            // Проверяем, мобильное ли это устройство
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                // На телефоне - показываем экран приветствия
-                welcomeScreen.style.display = 'flex';
-                instructionEl.innerHTML = 'Tap the 🔊 button to enable sound and start!';
-                speakerBtn.innerHTML = '🔇';
-            } else {
-                // На компьютере - начинаем сразу
-                isAudioEnabled = true;
-                speakerBtn.innerHTML = '🔊';
-                startNewRound();
-            }
-        };
+        // ЗАПУСК
+        window.onload = startNewRound;
     </script>
 </body>
 </html>
