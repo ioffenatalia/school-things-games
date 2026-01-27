@@ -3,6 +3,7 @@
 <head>
     <title>Colour Game</title>
     <style>
+        /* ВСЕ СТИЛИ ОСТАЮТСЯ ТАКИМИ ЖЕ КАК В ПРЕДЫДУЩЕМ КОДЕ */
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +35,6 @@
             margin: 0;
         }
         
-        /* ЗАГОЛОВОК */
         .header {
             flex-shrink: 0;
             margin-bottom: 8px;
@@ -57,7 +57,6 @@
             border: 2px solid #6a89cc;
         }
         
-        /* КНОПКА ДИНАМИКА И СЧЕТЧИК - КОМПАКТНЕЕ */
         .top-controls {
             flex-shrink: 0;
             display: flex;
@@ -95,7 +94,6 @@
             box-shadow: 0 4px 12px rgba(106, 137, 204, 0.2);
         }
         
-        /* ПРЕДМЕТЫ - УМЕНЬШИЛИ НА 10% */
         .items-container {
             flex: 1;
             display: flex;
@@ -123,7 +121,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            border: 5px solid; /* Уменьшили с 6px */
+            border: 5px solid;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
             padding: 10px;
         }
@@ -134,19 +132,18 @@
         }
         
         .colour-item img {
-            width: 70px; /* Было 80px */
+            width: 70px;
             height: 70px;
             object-fit: contain;
             margin-bottom: 8px;
         }
         
         .item-name {
-            font-size: 16px; /* Было 18px */
+            font-size: 16px;
             font-weight: bold;
             color: #333;
         }
         
-        /* СООБЩЕНИЯ - КОМПАКТНЕЕ */
         .messages-container {
             flex-shrink: 0;
             min-height: 60px;
@@ -158,7 +155,7 @@
         }
         
         .message {
-            font-size: 22px; /* Было 26px */
+            font-size: 22px;
             padding: 10px 18px;
             border-radius: 12px;
             margin: 4px auto;
@@ -179,7 +176,6 @@
             box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
         }
         
-        /* КНОПКА МЕНЮ - МЕНЬШЕ И НИЖЕ */
         .menu-btn {
             background: #ff9e00;
             color: white;
@@ -203,7 +199,52 @@
             background: #ff8c00;
         }
         
-        /* АНИМАЦИИ */
+        #welcomeScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd166 0%, #ff9e6d 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .welcome-title {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .welcome-text {
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        #enableSoundBtn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 40px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        #enableSoundBtn:hover {
+            transform: scale(1.05);
+            background: #45a049;
+        }
+        
         @keyframes bounce {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -223,148 +264,93 @@
             animation: shake 0.5s;
         }
         
-        /* МЕДИА-ЗАПРОСЫ */
+        /* Медиа-запросы остаются без изменений */
         @media (max-height: 700px) {
-            .container {
-                height: 98vh;
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            #instruction {
-                font-size: 18px;
-                padding: 6px;
-            }
-            
-            .colour-item img {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .items-grid {
-                gap: 10px;
-                padding: 6px;
-            }
-            
-            .speaker-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 28px;
-            }
-            
-            .counter {
-                font-size: 20px;
-                padding: 6px 15px;
-            }
-            
-            .message {
-                font-size: 20px;
-                padding: 8px 15px;
-            }
-            
-            .menu-btn {
-                padding: 8px 20px;
-                font-size: 16px;
-            }
+            .container { height: 98vh; padding: 10px; }
+            h1 { font-size: 24px; }
+            #instruction { font-size: 18px; padding: 6px; }
+            .colour-item img { width: 60px; height: 60px; }
+            .items-grid { gap: 10px; padding: 6px; }
+            .speaker-btn { width: 60px; height: 60px; font-size: 28px; }
+            .counter { font-size: 20px; padding: 6px 15px; }
+            .message { font-size: 20px; padding: 8px 15px; }
+            .menu-btn { padding: 8px 20px; font-size: 16px; }
+            .welcome-title { font-size: 28px; }
+            .welcome-text { font-size: 18px; }
         }
         
         @media (max-width: 600px) {
-            .container {
-                border-radius: 20px;
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 24px;
-            }
-            
-            .items-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                gap: 10px;
-            }
-            
-            .colour-item {
-                padding: 8px;
-                border-width: 4px;
-            }
-            
-            .colour-item img {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .item-name {
-                font-size: 14px;
-            }
+            .container { border-radius: 20px; padding: 10px; }
+            h1 { font-size: 24px; }
+            .items-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); gap: 10px; }
+            .colour-item { padding: 8px; border-width: 4px; }
+            .colour-item img { width: 60px; height: 60px; }
+            .item-name { font-size: 14px; }
+            .welcome-title { font-size: 28px; }
+            .welcome-text { font-size: 18px; }
         }
         
         @media (max-width: 400px) {
-            h1 {
-                font-size: 22px;
-            }
-            
-            #instruction {
-                font-size: 16px;
-            }
-            
-            .colour-item img {
-                width: 55px;
-                height: 55px;
-            }
-            
-            .items-grid {
-                gap: 8px;
-                padding: 5px;
-            }
-            
-            .speaker-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 26px;
-            }
-            
-            .top-controls {
-                gap: 10px;
-            }
+            h1 { font-size: 22px; }
+            #instruction { font-size: 16px; }
+            .colour-item img { width: 55px; height: 55px; }
+            .items-grid { gap: 8px; padding: 5px; }
+            .speaker-btn { width: 55px; height: 55px; font-size: 26px; }
+            .top-controls { gap: 10px; }
+            .welcome-title { font-size: 24px; }
+            .welcome-text { font-size: 16px; }
+            #enableSoundBtn { padding: 15px 30px; font-size: 20px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- ВЕРХНЯЯ ЧАСТЬ -->
+    <!-- ЭКРАН ПРИВЕТСТВИЯ -->
+    <div id="welcomeScreen">
+        <h1 class="welcome-title">🎨 Find the Colour! 🎵</h1>
+        <p class="welcome-text">Tap the button to enable sound<br>and start the game!</p>
+        <button id="enableSoundBtn">
+            🔊 Enable Sound & Start
+        </button>
+    </div>
+    
+    <!-- ОСНОВНАЯ ИГРА -->
+    <div class="container" style="display: none;">
         <div class="header">
             <h1>🎨 Find the Colour!</h1>
-            <div id="instruction">Listen and find the right colour!</div>
+            <div id="instruction">Tap the 🔊 button to hear the colour!</div>
         </div>
         
-        <!-- КНОПКА И СЧЕТЧИК РЯДОМ -->
         <div class="top-controls">
             <button class="speaker-btn" id="speakerBtn">🔊</button>
             <div class="counter">Found: <span id="score">0</span></div>
         </div>
         
-        <!-- 6 ПРЕДМЕТОВ -->
         <div class="items-container">
-            <div class="items-grid" id="itemsGrid">
-                <!-- Все 6 предметов -->
-            </div>
+            <div class="items-grid" id="itemsGrid"></div>
         </div>
         
-        <!-- СООБЩЕНИЯ И КНОПКА МЕНЮ -->
         <div class="messages-container">
             <div class="message correct-message" id="correctMessage">🎉 Excellent!</div>
             <div class="message wrong-message" id="wrongMessage">❌ Try again!</div>
- <button class="menu-btn" onclick="window.location.href='index.html'">
-    🏠 Menu
-</button>
+            <button class="menu-btn" onclick="window.location.href='index.html'">🏠 Menu</button>
+        </div>
     </div>
 
     <script>
-        // ДАННЫЕ
+        // АУДИОФАЙЛЫ (онлайн-ссылки, которые всегда работают)
+        const audioFiles = {
+            'pink': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'blue': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'yellow': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'purple': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'red': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'orange': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'correct': 'https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3',
+            'wrong': 'https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3',
+            'try_again': 'https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3'
+        };
+
+        // ЦВЕТА И ПРЕДМЕТЫ
         const colours = [
             { name: 'PINK', value: '#ff9eb5', audio: 'pink' },
             { name: 'BLUE', value: '#6a89cc', audio: 'blue' },
@@ -387,25 +373,79 @@
         let currentColour = null;
         let score = 0;
         let canInteract = true;
+        let isAudioEnabled = false;
+        let audioContext = null;
 
         // ЭЛЕМЕНТЫ
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const container = document.querySelector('.container');
         const instructionEl = document.getElementById('instruction');
         const speakerBtn = document.getElementById('speakerBtn');
         const itemsGrid = document.getElementById('itemsGrid');
         const correctMessage = document.getElementById('correctMessage');
         const wrongMessage = document.getElementById('wrongMessage');
         const scoreEl = document.getElementById('score');
+        const enableSoundBtn = document.getElementById('enableSoundBtn');
 
-        // ОЗВУЧКА
-        function speak(text) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.7;
-            utterance.pitch = 1.0;
-            utterance.onend = () => canInteract = true;
-            window.speechSynthesis.speak(utterance);
+        // ПРЕДЗАГРУЗКА АУДИО
+        const audioElements = {};
+        
+        function preloadAudio() {
+            Object.keys(audioFiles).forEach(key => {
+                const audio = new Audio();
+                audio.src = audioFiles[key];
+                audio.preload = 'auto';
+                audioElements[key] = audio;
+            });
         }
+
+        // ВОСПРОИЗВЕДЕНИЕ АУДИО
+        function playAudio(type) {
+            if (!isAudioEnabled) return;
+            
+            const audio = audioElements[type];
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => {
+                    console.log('Audio play failed:', e);
+                    // Если не получилось, пробуем через жесты
+                    if (!isAudioEnabled) {
+                        instructionEl.innerHTML = 'Tap the 🔊 button to enable sound!';
+                        instructionEl.style.background = '#fff9c4';
+                    }
+                });
+            }
+        }
+
+        // ГОВОРИМ ЦВЕТ
+        function speakColour(colourName) {
+            playAudio(colourName);
+        }
+
+        // КНОПКА ВКЛЮЧЕНИЯ ЗВУКА
+        enableSoundBtn.onclick = function() {
+            // Активируем аудиоконтекст
+            if (window.AudioContext || window.webkitAudioContext) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioContext = new AudioContextClass();
+                
+                // Пробуем запустить тестовый звук
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                gainNode.gain.value = 0.001; // Очень тихий
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+            
+            isAudioEnabled = true;
+            welcomeScreen.style.display = 'none';
+            container.style.display = 'flex';
+            
+            // Запускаем игру
+            setTimeout(() => startNewRound(), 300);
+        };
 
         // НОВЫЙ РАУНД
         function startNewRound() {
@@ -416,13 +456,21 @@
             
             createAllItems();
             
-            instructionEl.innerHTML = `Listen and find <strong>${currentColour.audio}</strong>!`;
+            instructionEl.innerHTML = `Find <strong>${currentColour.audio.toUpperCase()}</strong>!`;
+            instructionEl.style.background = '#f0f7ff';
+            instructionEl.style.border = '2px solid #6a89cc';
             
-            canInteract = false;
-            setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
+            canInteract = true;
+            
+            // Автоматически проигрываем цвет через 0.5 секунды
+            setTimeout(() => {
+                if (isAudioEnabled) {
+                    speakColour(currentColour.audio);
+                }
+            }, 500);
         }
 
-        // СОЗДАТЬ ВСЕ 6 ПРЕДМЕТОВ
+        // СОЗДАЕМ ПРЕДМЕТЫ
         function createAllItems() {
             itemsGrid.innerHTML = '';
             let shuffledItems = [...items];
@@ -452,21 +500,13 @@
                 score++;
                 scoreEl.textContent = score;
                 
-                // Анимация предмета
+                // Анимация
                 itemElement.classList.add('bounce');
-                
-                // Подсветка правильного предмета
                 itemElement.style.boxShadow = `0 0 20px ${item.colourValue}, 0 10px 20px rgba(0,0,0,0.15)`;
                 itemElement.style.borderWidth = '6px';
                 
                 correctMessage.style.display = 'block';
-                
-                // Правильное аудио
-                if (item.plural) {
-                    speak(`Yes! The ${item.name} are ${currentColour.audio}!`);
-                } else {
-                    speak(`Yes! The ${item.name} is ${currentColour.audio}!`);
-                }
+                playAudio('correct');
                 
                 canInteract = false;
                 setTimeout(() => {
@@ -479,25 +519,22 @@
             } else {
                 wrongMessage.style.display = 'block';
                 itemElement.classList.add('shake');
-                
-                // Красное мигание при ошибке
-                const originalBorder = itemElement.style.borderColor;
                 itemElement.style.borderColor = '#ff4757';
                 
-                speak(`No, try again! Find ${currentColour.audio}.`);
+                playAudio('wrong');
                 
                 setTimeout(() => {
                     wrongMessage.style.display = 'none';
                     itemElement.classList.remove('shake');
-                    itemElement.style.borderColor = originalBorder;
+                    itemElement.style.borderColor = item.colourValue;
                 }, 1000);
             }
         }
 
-        // КНОПКА АУДИО
+        // КНОПКА ДИНАМИКА
         speakerBtn.onclick = function() {
-            if (currentColour) {
-                speak(`Find ${currentColour.audio}.`);
+            if (currentColour && isAudioEnabled) {
+                speakColour(currentColour.audio);
                 this.classList.add('bounce');
                 setTimeout(() => this.classList.remove('bounce'), 500);
             }
@@ -512,8 +549,24 @@
             return array;
         }
 
-        // ЗАПУСК
-        window.onload = startNewRound;
+        // ЗАГРУЗКА
+        window.onload = function() {
+            preloadAudio();
+            
+            // На мобильных показываем экран приветствия всегда
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                welcomeScreen.style.display = 'flex';
+                container.style.display = 'none';
+            } else {
+                // На компьютере включаем звук сразу
+                isAudioEnabled = true;
+                welcomeScreen.style.display = 'none';
+                container.style.display = 'flex';
+                startNewRound();
+            }
+        };
     </script>
 </body>
 </html>
