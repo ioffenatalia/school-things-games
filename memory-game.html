@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Game - School Things</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #a3bded 0%, #6991c7 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 750px;
+            background: white;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0 #ffd166;
+        }
+        
+        #instruction {
+            font-size: 24px;
+            color: #333;
+            margin: 15px 0;
+            padding: 12px;
+            background: #f0f7ff;
+            border-radius: 15px;
+            border: 3px solid #6a89cc;
+        }
+        
+        /* ИГРОВОЕ ПОЛЕ */
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+            perspective: 1000px;
+        }
+        
+        /* КАРТОЧКА */
+        .memory-card {
+            width: 100%;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .memory-card.matched {
+            cursor: default;
+            transform: rotateY(180deg);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* ЛИЦО И ОБОРОТ КАРТОЧКИ */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card-front {
+            background: white;
+            transform: rotateY(180deg);
+            border: 4px solid #6a89cc;
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #6a89cc, #4a69bd);
+            color: white;
+            font-size: 40px;
+            border: 4px solid #4a69bd;
+        }
+        
+        .card-front img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+        
+        /* СЧЕТЧИКИ */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: #f8f9fa;
+            padding: 12px 25px;
+            border-radius: 20px;
+            border: 3px solid #e0e0e0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            min-width: 150px;
+        }
+        
+        .stat-value {
+            color: #6a89cc;
+            font-size: 28px;
+            margin-left: 8px;
+        }
+        
+        /* КНОПКИ */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 14px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .speaker-btn {
+            background: #ff9e00;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 28px;
+            padding: 0;
+        }
+        
+        .restart-btn {
+            background: #6a89cc;
+        }
+        
+        /* СООБЩЕНИЯ */
+        .message {
+            font-size: 28px;
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin: 15px auto;
+            display: none;
+            max-width: 500px;
+            animation: messageAppear 0.5s;
+        }
+        
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .pair-message {
+            background: #2196F3;
+            color: white;
+            display: none;
+            font-size: 24px;
+        }
+        
+        /* КНОПКА МЕНЮ - ОДНА В ЦЕНТРЕ */
+        .menu-btn-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .menu-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 14px 40px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .menu-btn:hover {
+            transform: scale(1.05);
+            background: #ff5252;
+        }
+        
+        /* АНИМАЦИИ */
+        @keyframes cardFlip {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(180deg); }
+        }
+        
+        @keyframes matchAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .match-animation {
+            animation: matchAnimation 0.5s;
+        }
+        
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 700px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .memory-card {
+                height: 100px;
+            }
+            
+            .card-front img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .stat {
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 18px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .menu-btn {
+                padding: 12px 30px;
+                font-size: 20px;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .game-board {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .memory-card {
+                height: 90px;
+            }
+            
+            .card-front img {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-btn {
+                width: 80%;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .stat {
+                width: 90%;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Memory Game</h1>
+        
+        <div id="instruction">
+            Find matching pairs of school things!
+        </div>
+        
+        <!-- СТАТИСТИКА -->
+        <div class="stats">
+            <div class="stat">
+                Moves: <span class="stat-value" id="moves">0</span>
+            </div>
+            <div class="stat">
+                Pairs: <span class="stat-value" id="pairs">0</span>/6
+            </div>
+            <div class="stat">
+                Time: <span class="stat-value" id="time">0</span>s
+            </div>
+        </div>
+        
+        <!-- ИГРОВОЕ ПОЛЕ -->
+        <div class="game-board" id="gameBoard">
+            <!-- Карточки появятся здесь -->
+        </div>
+        
+        <!-- КНОПКИ -->
+        <div class="controls">
+            <button class="control-btn speaker-btn" id="speakerBtn">
+                🔊
+            </button>
+            <button class="control-btn restart-btn" onclick="startGame()">
+                🔄 New Game
+            </button>
+        </div>
+        
+        <!-- СООБЩЕНИЯ -->
+        <div class="message success-message" id="successMessage">
+            🎉 Congratulations! You won!
+        </div>
+        
+        <div class="message pair-message" id="pairMessage">
+            ✅ Good job! You found a pair!
+        </div>
+        
+        <!-- КНОПКА МЕНЮ - ОДНА В ЦЕНТРЕ -->
+        <div class="menu-btn-container">
+            <button class="menu-btn" onclick="window.location.href='menu.html'">
+                🏠 Back to Menu
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1. ДАННЫЕ ДЛЯ ИГРЫ - 6 ПАР
+        const gameItems = [
+            { name: 'pencil', image: 'images/pencil.png' },
+            { name: 'pen', image: 'images/pen.png' },
+            { name: 'pencil case', image: 'images/pencil_case.png' },
+            { name: 'scissors', image: 'images/scissors.png' },
+            { name: 'glue', image: 'images/glue.png' },
+            { name: 'book', image: 'images/book.png' }
+        ];
+
+        // 2. ПЕРЕМЕННЫЕ ИГРЫ
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let totalMoves = 0;
+        let gameStarted = false;
+        let startTime = 0;
+        let timerInterval = null;
+        let canFlip = true;
+
+        // 3. ЭЛЕМЕНТЫ СТРАНИЦЫ
+        const instructionEl = document.getElementById('instruction');
+        const gameBoard = document.getElementById('gameBoard');
+        const speakerBtn = document.getElementById('speakerBtn');
+        const movesEl = document.getElementById('moves');
+        const pairsEl = document.getElementById('pairs');
+        const timeEl = document.getElementById('time');
+        const successMessage = document.getElementById('successMessage');
+        const pairMessage = document.getElementById('pairMessage');
+
+        // 4. ОЗВУЧКА
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.7;
+            utterance.pitch = 1.0;
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 5. СОЗДАТЬ КОЛОДУ КАРТ
+        function createDeck() {
+            cards = [];
+            
+            // Создаем 2 карты для каждого предмета
+            gameItems.forEach(item => {
+                cards.push({ ...item, id: cards.length });
+                cards.push({ ...item, id: cards.length });
+            });
+            
+            // Перемешиваем
+            shuffleArray(cards);
+        }
+
+        // 6. СОЗДАТЬ ИГРОВОЕ ПОЛЕ
+        function createBoard() {
+            gameBoard.innerHTML = '';
+            successMessage.style.display = 'none';
+            pairMessage.style.display = 'none';
+            
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'memory-card';
+                cardElement.dataset.index = index;
+                cardElement.dataset.name = card.name;
+                
+                cardElement.innerHTML = `
+                    <div class="card-front">
+                        <img src="${card.image}" 
+                             alt="${card.name}"
+                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'">
+                    </div>
+                    <div class="card-back">
+                        ?
+                    </div>
+                `;
+                
+                cardElement.addEventListener('click', () => flipCard(cardElement, index));
+                gameBoard.appendChild(cardElement);
+            });
+        }
+
+        // 7. ПЕРЕВЕРНУТЬ КАРТУ
+        function flipCard(cardElement, index) {
+            // Проверяем можно ли переворачивать
+            if (!canFlip || cardElement.classList.contains('flipped') || 
+                cardElement.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+            
+            // Переворачиваем карту
+            cardElement.classList.add('flipped');
+            flippedCards.push({ element: cardElement, index: index, name: cards[index].name });
+            
+            // Озвучиваем предмет
+            speak(cards[index].name);
+            
+            // Если перевернули 2 карты
+            if (flippedCards.length === 2) {
+                totalMoves++;
+                movesEl.textContent = totalMoves;
+                canFlip = false;
+                
+                // Проверяем на совпадение
+                setTimeout(checkForMatch, 800);
+            }
+        }
+
+        // 8. ПРОВЕРИТЬ НА СОВПАДЕНИЕ
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            
+            if (card1.name === card2.name) {
+                // Совпадение!
+                matchedPairs++;
+                pairsEl.textContent = matchedPairs;
+                
+                // Отмечаем как совпавшие
+                card1.element.classList.add('matched');
+                card2.element.classList.add('matched');
+                
+                // Анимация
+                card1.element.classList.add('match-animation');
+                card2.element.classList.add('match-animation');
+                
+                // Сообщение
+                pairMessage.style.display = 'block';
+                speak(`Good! ${card1.name} match!`);
+                
+                setTimeout(() => {
+                    pairMessage.style.display = 'none';
+                    card1.element.classList.remove('match-animation');
+                    card2.element.classList.remove('match-animation');
+                }, 1500);
+                
+                // Проверяем конец игры
+                if (matchedPairs === gameItems.length) {
+                    endGame();
+                }
+            } else {
+                // Не совпали
+                setTimeout(() => {
+                    card1.element.classList.remove('flipped');
+                    card2.element.classList.remove('flipped');
+                    speak("Try again!");
+                }, 800);
+            }
+            
+            // Сбрасываем
+            flippedCards = [];
+            canFlip = true;
+        }
+
+        // 9. НАЧАТЬ ИГРУ
+        function startGame() {
+            // Сброс
+            matchedPairs = 0;
+            totalMoves = 0;
+            flippedCards = [];
+            gameStarted = true;
+            canFlip = true;
+            
+            // Обновляем статистику
+            movesEl.textContent = '0';
+            pairsEl.textContent = '0';
+            timeEl.textContent = '0';
+            
+            // Создаем колоду и поле
+            createDeck();
+            createBoard();
+            
+            // Запускаем таймер
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Озвучиваем инструкцию
+            setTimeout(() => {
+                speak("Find matching pairs. Click two cards to find the same school things.");
+            }, 500);
+        }
+
+        // 10. ОБНОВИТЬ ТАЙМЕР
+        function updateTimer() {
+            if (gameStarted) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                timeEl.textContent = elapsed;
+            }
+        }
+
+        // 11. ЗАКОНЧИТЬ ИГРУ
+        function endGame() {
+            gameStarted = false;
+            clearInterval(timerInterval);
+            
+            // Показываем сообщение
+            successMessage.style.display = 'block';
+            
+            // Рассчитываем результат
+            const time = Math.floor((Date.now() - startTime) / 1000);
+            const score = Math.max(100 - totalMoves * 2 - Math.floor(time / 5), 10);
+            
+            // Озвучиваем результат
+            setTimeout(() => {
+                speak(`Congratulations! You found all pairs in ${time} seconds with ${totalMoves} moves. Excellent memory!`);
+            }, 1000);
+        }
+
+        // 12. КНОПКА АУДИО
+        speakerBtn.onclick = function() {
+            if (gameStarted) {
+                speak("Find matching pairs of school things. Click two cards with the same picture.");
+            } else {
+                speak("Click New Game to start. Find matching pairs of school things.");
+            }
+        };
+
+        // 13. ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 14. ЗАПУСК ИГРЫ
+        window.onload = function() {
+            startGame();
+        };
+    </script>
+</body>
+</html>

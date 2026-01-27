@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>What's in the Schoolbag?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: #f0f8ff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        /* ОБЛАСТЬ С РЮКЗАКОМ */
+        .schoolbag-area {
+            margin: 5px 0 10px 0;
+        }
+        
+        .schoolbag-image {
+            width: 180px;
+            height: 160px;
+            margin: 0 auto 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .schoolbag-image img {
+            width: 150px;
+            height: 130px;
+            object-fit: contain;
+        }
+        
+        /* КНОПКА АУДИО - ПОД РЮКЗАКОМ */
+        .speaker-under-bag {
+            background: #4CAF50;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            cursor: pointer;
+            color: white;
+            margin: 5px auto 10px auto;
+            display: block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        .speaker-under-bag:hover {
+            transform: scale(1.1);
+        }
+        
+        /* ПРЕДМЕТЫ В РЮКЗАКЕ */
+        .items-in-bag {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 0 auto 15px auto;
+            min-height: 50px;
+            max-width: 250px;
+        }
+        
+        .item-in-bag {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: appear 0.3s;
+        }
+        
+        .item-in-bag img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        /* КАРТОЧКИ С ПРЕДМЕТАМИ */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 15px 0 20px 0;
+        }
+        
+        .item-card {
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 3px solid #e0e0e0;
+            padding: 15px;
+            height: 120px;
+        }
+        
+        .item-card:hover {
+            border-color: #4CAF50;
+            transform: translateY(-3px);
+        }
+        
+        .item-card.used {
+            opacity: 0.3;
+            cursor: default;
+            border-color: #e0e0e0;
+        }
+        
+        .item-card.used:hover {
+            transform: none;
+        }
+        
+        .item-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        
+        /* СООБЩЕНИЯ */
+        .message {
+            font-size: 24px;
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin: 10px auto;
+            display: none;
+            max-width: 400px;
+            animation: messageAppear 0.3s;
+        }
+        
+        .correct-message {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .wrong-message {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        /* КНОПКА МЕНЮ */
+        .menu-btn {
+            background: #6a89cc;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .menu-btn:hover {
+            background: #5a79bc;
+        }
+        
+        /* АНИМАЦИИ */
+        @keyframes flyToBag {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--target-x), var(--target-y)) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        .flying {
+            animation: flyToBag 0.6s forwards;
+            position: fixed;
+            z-index: 1000;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .bounce {
+            animation: bounce 0.4s;
+        }
+        
+        @keyframes appear {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 600px) {
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .schoolbag-image {
+                width: 160px;
+                height: 140px;
+            }
+            
+            .schoolbag-image img {
+                width: 130px;
+                height: 110px;
+            }
+            
+            .item-card {
+                height: 110px;
+            }
+            
+            .item-card img {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .speaker-under-bag {
+                width: 55px;
+                height: 55px;
+                font-size: 26px;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .schoolbag-image {
+                width: 150px;
+                height: 130px;
+            }
+            
+            .schoolbag-image img {
+                width: 120px;
+                height: 100px;
+            }
+            
+            .item-card {
+                height: 100px;
+            }
+            
+            .item-card img {
+                width: 65px;
+                height: 65px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎒 Put in the Schoolbag</h1>
+        
+        <!-- РЮКЗАК -->
+        <div class="schoolbag-area">
+            <div class="schoolbag-image" id="schoolbagImage">
+                <img src="images/schoolbag.png" alt="Schoolbag">
+            </div>
+            
+            <!-- КНОПКА АУДИО ПОД РЮКЗАКОМ -->
+            <button class="speaker-under-bag" id="speakerBtn">
+                🔊
+            </button>
+            
+            <!-- ПРЕДМЕТЫ В РЮКЗАКЕ -->
+            <div class="items-in-bag" id="itemsInBag"></div>
+        </div>
+        
+        <!-- КАРТОЧКИ -->
+        <div class="items-grid" id="itemsGrid"></div>
+        
+        <!-- СООБЩЕНИЯ -->
+        <div class="message correct-message" id="correctMessage">
+            🎉 Good! Next!
+        </div>
+        
+        <div class="message wrong-message" id="wrongMessage">
+            ❌ Try again
+        </div>
+        
+        <!-- КНОПКА МЕНЮ -->
+        <button class="menu-btn" onclick="window.location.href='menu.html'">
+            🏠 Menu
+        </button>
+    </div>
+
+    <script>
+        // 1. ДАННЫЕ
+        const allItems = [
+            { name: 'pencil', image: 'images/pencil.png' },
+            { name: 'pen', image: 'images/pen.png' },
+            { name: 'pencil case', image: 'images/pencil_case.png' },
+            { name: 'scissors', image: 'images/scissors.png' },
+            { name: 'glue', image: 'images/glue.png' },
+            { name: 'book', image: 'images/book.png' }
+        ];
+
+        // 2. ПЕРЕМЕННЫЕ
+        let requiredItems = [];
+        let foundItems = [];
+        let currentTaskText = '';
+        let canInteract = false;
+
+        // 3. ЭЛЕМЕНТЫ
+        const speakerBtn = document.getElementById('speakerBtn');
+        const schoolbagImage = document.getElementById('schoolbagImage');
+        const itemsInBag = document.getElementById('itemsInBag');
+        const itemsGrid = document.getElementById('itemsGrid');
+        const correctMessage = document.getElementById('correctMessage');
+        const wrongMessage = document.getElementById('wrongMessage');
+
+        // 4. ОЗВУЧКА
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.7;
+            utterance.pitch = 1.0;
+            
+            utterance.onend = function() {
+                canInteract = true;
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 5. НОВОЕ ЗАДАНИЕ
+        function createNewTask() {
+            requiredItems = [];
+            foundItems = [];
+            itemsInBag.innerHTML = '';
+            correctMessage.style.display = 'none';
+            wrongMessage.style.display = 'none';
+            
+            const itemCount = Math.random() > 0.5 ? 1 : 2;
+            
+            let availableItems = [...allItems];
+            shuffleArray(availableItems);
+            
+            for (let i = 0; i < itemCount; i++) {
+                requiredItems.push(availableItems[i]);
+            }
+            
+            if (requiredItems.length === 1) {
+                currentTaskText = `Put the ${requiredItems[0].name} in the schoolbag.`;
+            } else {
+                currentTaskText = `Put the ${requiredItems[0].name} and the ${requiredItems[1].name} in the schoolbag.`;
+            }
+            
+            showItems();
+            canInteract = false;
+            
+            setTimeout(() => {
+                speak(currentTaskText);
+            }, 500);
+        }
+
+        // 6. ПОКАЗАТЬ КАРТОЧКИ
+        function showItems() {
+            itemsGrid.innerHTML = '';
+            
+            let shuffledItems = [...allItems];
+            shuffleArray(shuffledItems);
+            
+            shuffledItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.dataset.name = item.name;
+                
+                card.innerHTML = `
+                    <img src="${item.image}" 
+                         alt="${item.name}"
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'">
+                `;
+                
+                card.addEventListener('click', () => handleCardClick(item.name, card, item.image));
+                itemsGrid.appendChild(card);
+            });
+        }
+
+        // 7. КЛИК ПО КАРТОЧКЕ
+        function handleCardClick(itemName, card, itemImage) {
+            if (!canInteract) {
+                speak("Listen first!");
+                return;
+            }
+            
+            const isRequired = requiredItems.some(item => item.name === itemName);
+            const isAlreadyFound = foundItems.includes(itemName);
+            
+            if (!isRequired) {
+                wrongMessage.style.display = 'block';
+                speak("No, try again.");
+                setTimeout(() => wrongMessage.style.display = 'none', 1000);
+                return;
+            }
+            
+            if (isAlreadyFound) {
+                speak("Already there.");
+                return;
+            }
+            
+            foundItems.push(itemName);
+            
+            // Анимация полета
+            const cardRect = card.getBoundingClientRect();
+            const bagRect = schoolbagImage.getBoundingClientRect();
+            
+            const flyingImg = document.createElement('img');
+            flyingImg.src = itemImage;
+            flyingImg.style.cssText = `
+                position: fixed;
+                left: ${cardRect.left + cardRect.width/2}px;
+                top: ${cardRect.top + cardRect.height/2}px;
+                width: 50px;
+                height: 50px;
+                z-index: 1000;
+            `;
+            
+            document.body.appendChild(flyingImg);
+            
+            const targetX = bagRect.left + bagRect.width/2 - (cardRect.left + cardRect.width/2);
+            const targetY = bagRect.top + bagRect.height/2 - (cardRect.top + cardRect.height/2);
+            
+            flyingImg.style.setProperty('--target-x', `${targetX}px`);
+            flyingImg.style.setProperty('--target-y', `${targetY}px`);
+            flyingImg.classList.add('flying');
+            
+            setTimeout(() => {
+                document.body.removeChild(flyingImg);
+                
+                const itemInBag = document.createElement('div');
+                itemInBag.className = 'item-in-bag';
+                itemInBag.innerHTML = `<img src="${itemImage}" alt="${itemName}">`;
+                itemsInBag.appendChild(itemInBag);
+                
+                card.classList.add('used');
+                
+                if (foundItems.length === requiredItems.length) {
+                    canInteract = false;
+                    schoolbagImage.classList.add('bounce');
+                    correctMessage.style.display = 'block';
+                    
+                    const praises = ["Excellent!", "Great job!", "Perfect!", "Well done!"];
+                    const praise = praises[Math.floor(Math.random() * praises.length)];
+                    speak(praise);
+                    
+                    setTimeout(() => {
+                        correctMessage.style.display = 'none';
+                        schoolbagImage.classList.remove('bounce');
+                        createNewTask();
+                    }, 1500);
+                } else {
+                    speak("Good!");
+                }
+            }, 600);
+        }
+
+        // 8. КНОПКА АУДИО ПОД РЮКЗАКОМ
+        speakerBtn.onclick = function() {
+            if (currentTaskText) {
+                speak(currentTaskText);
+                this.innerHTML = '🔊';
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => this.style.transform = 'scale(1)', 300);
+            }
+        };
+
+        // 9. ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 10. ЗАПУСК
+        window.onload = function() {
+            createNewTask();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find the Picture! - School Things</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 2px 2px 0 #ffe66d;
+        }
+        
+        #instruction {
+            font-size: 24px;
+            color: #333;
+            margin: 15px 0;
+            min-height: 60px;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #4ecdc4;
+            transition: all 0.3s;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        .speaker-btn {
+            background: #4ecdc4;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .speaker-btn:hover {
+            transform: scale(1.1);
+            background: #45b7b0;
+        }
+        
+        .score {
+            font-size: 22px;
+            color: #ff6b6b;
+            font-weight: bold;
+            background: #fff9e6;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 2px solid #ffd166;
+        }
+        
+        /* СТРЕЛОЧКА-ПОДСКАЗКА */
+        .speaker-hint {
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            animation: bounceArrow 2s infinite;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-direction: row-reverse;
+        }
+        
+        .arrow {
+            font-size: 30px;
+            color: #ff6b6b;
+        }
+        
+        .hint-text {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
+            box-shadow: 0 3px 8px rgba(255, 107, 107, 0.3);
+        }
+        
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(-10px); }
+        }
+        
+        /* РАСПОЛОЖЕНИЕ КАРТИНОК: 2 СВЕРХУ, 2 СНИЗУ */
+        .pictures-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+            height: 400px;
+        }
+        
+        .picture-item {
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+        
+        .picture-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* СИММЕТРИЧНОЕ РАСПОЛОЖЕНИЕ КАРТИНОК */
+        .picture-item:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        
+        .picture-item:nth-child(2) {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .picture-item:nth-child(3) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .picture-item:nth-child(4) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        
+        .picture-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .picture-item span {
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* АНИМАЦИИ ДЛЯ КАРТОЧЕК */
+        .correct {
+            animation: correctAnimation 0.8s;
+            border-color: #4CAF50 !important;
+            background: #e8f5e9;
+        }
+        
+        .wrong {
+            animation: wrongAnimation 0.5s;
+            border-color: #ff6b6b !important;
+            background: #ffebee;
+        }
+        
+        @keyframes correctAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes wrongAnimation {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+        
+        .buttons-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .menu-btn {
+            background: linear-gradient(to right, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 15px 30px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 6px 15px rgba(78, 205, 196, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .menu-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(to right, #45b7b0, #3d8f7d);
+        }
+        
+        .next-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 15px 30px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Адаптивность для очень маленьких экранов */
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            #instruction {
+                font-size: 20px;
+            }
+            
+            .speaker-hint {
+                left: 60px;
+            }
+            
+            .hint-text {
+                font-size: 14px;
+                padding: 4px 8px;
+            }
+            
+            .pictures-container {
+                height: 350px;
+                gap: 12px;
+            }
+            
+            .picture-item img {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .picture-item span {
+                font-size: 18px;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .menu-btn, .next-btn {
+                font-size: 20px;
+                padding: 14px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Find the Picture! 🎯</h1>
+        
+        <div id="instruction">
+            👇 Click the speaker button to hear the word!
+        </div>
+        
+        <div class="controls">
+            <button class="speaker-btn" id="speakerBtn">
+                🔈
+            </button>
+            
+            <!-- СТРЕЛОЧКА-ПОДСКАЗКА (ИСПРАВЛЕНА) -->
+            <div class="speaker-hint" id="speakerHint">
+                <div class="hint-text">Click me!</div>
+                <div class="arrow">👈</div>
+            </div>
+            
+            <div class="score">
+                Score: <span id="score">0</span>
+            </div>
+        </div>
+        
+        <!-- КОНТЕЙНЕР ДЛЯ КАРТИНОК (2х2) -->
+        <div class="pictures-container" id="picturesContainer">
+            <!-- Картинки появятся здесь -->
+        </div>
+        
+        <!-- КОНТЕЙНЕР ДЛЯ КНОПОК -->
+        <div class="buttons-container">
+            <button class="menu-btn" onclick="window.location.href='menu.html'">
+                🏠 Menu
+            </button>
+            
+            <button class="next-btn" onclick="nextRound()">
+                Next Round ➡️
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1. СПИСОК ВАШИХ СЛОВ И КАРТИНОК
+        const words = [
+            { name: 'schoolbag', displayName: 'SCHOOLBAG', image: 'images/schoolbag.png' },
+            { name: 'pencil', displayName: 'PENCIL', image: 'images/pencil.png' },
+            { name: 'pencil case', displayName: 'PENCIL CASE', image: 'images/pencil_case.png' },
+            { name: 'scissors', displayName: 'SCISSORS', image: 'images/scissors.png' },
+            { name: 'glue', displayName: 'GLUE', image: 'images/glue.png' },
+            { name: 'book', displayName: 'BOOK', image: 'images/book.png' }
+        ];
+
+        // 2. ПЕРЕМЕННЫЕ ИГРЫ
+        let currentTarget = '';
+        let score = 0;
+        let canClick = false;
+
+        // 3. ЭЛЕМЕНТЫ СТРАНИЦЫ
+        const instructionEl = document.getElementById('instruction');
+        const speakerBtn = document.getElementById('speakerBtn');
+        const speakerHint = document.getElementById('speakerHint');
+        const picturesContainer = document.getElementById('picturesContainer');
+        const scoreEl = document.getElementById('score');
+
+        // 5. ФУНКЦИЯ ОЗВУЧКИ
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            utterance.pitch = 1.2;
+            
+            utterance.onend = function() {
+                canClick = true;
+                instructionEl.innerHTML = `👉 Find: <strong>${text.split('the ')[1].toUpperCase()}</strong>`;
+                // Скрываем подсказку после нажатия на динамик
+                speakerHint.style.display = 'none';
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 6. НАЧАЛО НОВОГО РАУНДА
+        function startNewRound() {
+            // Показываем подсказку
+            speakerHint.style.display = 'flex';
+            
+            // Выбираем случайное слово
+            const randomIndex = Math.floor(Math.random() * words.length);
+            currentTarget = words[randomIndex].name;
+            
+            instructionEl.innerHTML = '👇 Click the speaker button to hear the word!';
+            
+            generatePictures();
+            
+            canClick = false;
+        }
+
+        // 7. ГЕНЕРАЦИЯ 4 КАРТИНОК (2 сверху, 2 снизу)
+        function generatePictures() {
+            picturesContainer.innerHTML = '';
+            
+            // 1 правильная + 3 случайные
+            let selectedWords = [currentTarget];
+            
+            while (selectedWords.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)].name;
+                if (!selectedWords.includes(randomWord)) {
+                    selectedWords.push(randomWord);
+                }
+            }
+            
+            // Перемешиваем
+            selectedWords = shuffleArray(selectedWords);
+            
+            // Создаем 4 карточки
+            selectedWords.forEach((word, index) => {
+                const wordObj = words.find(w => w.name === word);
+                
+                const card = document.createElement('div');
+                card.className = 'picture-item';
+                card.dataset.word = word;
+                
+                // Используем ВАШИ картинки
+                card.innerHTML = `
+                    <img src="${wordObj.image}" 
+                         alt="${word}"
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'">
+                    <span>${wordObj.displayName}</span>
+                `;
+                
+                card.onclick = function() {
+                    if (!canClick) {
+                        // Только голосовая обратная связь
+                        speak("First click the speaker to hear the word");
+                        return;
+                    }
+                    
+                    handleCardClick(word, this);
+                };
+                
+                picturesContainer.appendChild(card);
+            });
+        }
+
+        // 8. ОБРАБОТКА КЛИКА - ТОЛЬКО ГОЛОСОВАЯ ОБРАТНАЯ СВЯЗЬ
+        function handleCardClick(clickedWord, cardElement) {
+            canClick = false;
+            
+            if (clickedWord === currentTarget) {
+                // Правильно - только голос
+                cardElement.classList.add('correct');
+                score += 10;
+                scoreEl.textContent = score;
+                
+                // Обновляем инструкцию
+                instructionEl.innerHTML = `🎉 Great! Find another word!`;
+                
+                // Только голосовая похвала
+                setTimeout(() => {
+                    speak("Excellent! You found it!");
+                }, 300);
+            } else {
+                // Неправильно - только голос
+                cardElement.classList.add('wrong');
+                
+                // Обновляем инструкцию
+                instructionEl.innerHTML = `👂 Listen again and try!`;
+                
+                // Только голосовая подсказка
+                setTimeout(() => {
+                    speak(`Try again! Listen for ${currentTarget}`);
+                }, 300);
+            }
+            
+            // Восстанавливаем возможность клика через 2 секунды
+            setTimeout(() => {
+                canClick = true;
+                instructionEl.innerHTML = `👉 Click speaker to hear again`;
+            }, 2000);
+        }
+
+        // 9. СЛЕДУЮЩИЙ РАУНД
+        function nextRound() {
+            startNewRound();
+        }
+
+        // 10. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 11. КНОПКА ДИНАМИКА
+        speakerBtn.onclick = function() {
+            speak(`Find the ${currentTarget}`);
+            this.innerHTML = '🔊';
+            
+            this.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 300);
+        };
+
+        // 12. ЗАПУСК ИГРЫ
+        window.onload = function() {
+            startNewRound();
+            
+            // Автоматически скрываем подсказку через 10 секунд
+            setTimeout(() => {
+                if (speakerHint.style.display !== 'none') {
+                    speakerHint.style.display = 'none';
+                }
+            }, 10000);
+        };
+    </script>
+</body>
+</html>

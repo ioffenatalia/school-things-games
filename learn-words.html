@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Things - Учим слова</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #ffe6f2;
+            font-family: 'Comic Sans MS', cursive;
+            padding: 15px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            color: #ff66b2;
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+        .card {
+            width: 170px;
+            height: 210px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 12px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+        }
+        .card p {
+            font-size: 20px;
+            color: #333;
+            margin-top: 8px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .mix-btn {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            font-family: 'Comic Sans MS', cursive;
+            padding: 0;
+        }
+        .mix-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+        .mix-btn:active {
+            transform: scale(0.92);
+        }
+        .menu-btn {
+            padding: 12px 30px;
+            font-size: 20px;
+            color: white;
+            background: #ff6b6b;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .menu-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+        
+        /* Стили для круглой иконки со стрелками */
+        .mix-icon {
+            position: relative;
+            width: 28px;
+            height: 28px;
+            margin-bottom: 3px;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 3px solid transparent;
+            border-right: 3px solid transparent;
+            border-bottom: 6px solid white;
+        }
+        
+        .arrow-top {
+            top: 1px;
+            left: 11px;
+        }
+        
+        .arrow-right {
+            top: 11px;
+            right: 1px;
+            transform: rotate(90deg);
+        }
+        
+        .arrow-bottom {
+            bottom: 1px;
+            left: 11px;
+            transform: rotate(180deg);
+        }
+        
+        .arrow-left {
+            top: 11px;
+            left: 1px;
+            transform: rotate(-90deg);
+        }
+        
+        .mix-text {
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Анимация вращения */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spinning .mix-icon {
+            animation: spin 0.6s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎒 School Things 🎒</h1>
+    <div class="container" id="cardContainer">
+        <!-- Карточки появятся здесь -->
+    </div>
+    
+    <div class="navigation">
+        <button class="menu-btn" onclick="window.location.href='menu.html'">
+            🏠 Menu
+        </button>
+        
+        <button class="mix-btn" onclick="shuffleCards()">
+            <div class="mix-icon">
+                <div class="arrow arrow-top"></div>
+                <div class="arrow arrow-right"></div>
+                <div class="arrow arrow-bottom"></div>
+                <div class="arrow arrow-left"></div>
+            </div>
+            <span class="mix-text">Mix</span>
+        </button>
+    </div>
+
+    <script>
+        // Массив слов
+        const words = [
+            {name: 'schoolbag', audio: 'audio/schoolbag.mp3'},
+            {name: 'pencil', audio: 'audio/pencil.mp3'},
+            {name: 'pencil case', audio: 'audio/pencil_case.mp3'},
+            {name: 'scissors', audio: 'audio/scissors.mp3'},
+            {name: 'glue', audio: 'audio/glue.mp3'},
+            {name: 'book', audio: 'audio/book.mp3'}
+        ];
+
+        const container = document.getElementById('cardContainer');
+        
+        // Функция для создания карточек
+        function createCards(wordArray) {
+            // Очищаем контейнер
+            container.innerHTML = '';
+            
+            // Создаем карточки
+            wordArray.forEach(word => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="images/${word.name}.png" alt="${word.name}">
+                    <p>${word.name}</p>
+                `;
+                
+                // При клике проигрываем аудио
+                card.onclick = function() {
+                    const audio = new Audio(word.audio);
+                    audio.play();
+                    // Визуальный отклик
+                    this.style.background = '#e6fff2';
+                    setTimeout(() => {
+                        this.style.background = 'white';
+                    }, 300);
+                };
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Функция для перемешивания карточек
+        function shuffleCards() {
+            // Создаем копию массива words
+            const shuffledWords = [...words];
+            
+            // Алгоритм Фишера-Йетса для перемешивания
+            for (let i = shuffledWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
+            }
+            
+            // Создаем карточки с перемешанным порядком
+            createCards(shuffledWords);
+            
+            // Анимация кнопки
+            const mixBtn = document.querySelector('.mix-btn');
+            const mixIcon = document.querySelector('.mix-icon');
+            
+            // Добавляем класс для анимации
+            mixBtn.classList.add('spinning');
+            
+            // Эффект нажатия
+            mixBtn.style.transform = 'scale(0.92)';
+            mixBtn.style.background = 'linear-gradient(135deg, #2E7D32, #1B5E20)';
+            
+            // Через некоторое время возвращаем к исходному состоянию
+            setTimeout(() => {
+                mixBtn.classList.remove('spinning');
+                mixBtn.style.transform = 'scale(1)';
+                mixBtn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+            }, 600);
+        }
+        
+        // Инициализация при загрузке страницы
+        createCards(words);
+    </script>
+</body>
+</html>

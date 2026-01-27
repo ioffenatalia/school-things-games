@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Things Games - Game Menu</title>
+    <style>
+        :root {
+            --yellow: #FFD166;
+            --orange: #FF9E6D;
+            --pink: #FF85A1;
+            --blue: #6A9EFF;
+            --green: #7AE582;
+            --purple: #B388EB;
+            --light-blue: #85E3FF;
+            --red: #FF6B6B;
+            --dark-blue: #2D3142;
+            --cream: #FFF8F0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+            background: linear-gradient(135deg, var(--light-blue), var(--blue));
+            min-height: 100vh;
+            padding: 15px;
+            color: var(--dark-blue);
+            overflow-x: hidden;
+        }
+        
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounceIn 0.8s ease;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: var(--red);
+            text-shadow: 4px 4px 0 var(--yellow), 
+                        8px 8px 0 rgba(0,0,0,0.1);
+            letter-spacing: 1px;
+            background: var(--cream);
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 6px dashed var(--orange);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.5rem;
+            color: var(--cream);
+            background: rgba(45, 49, 66, 0.8);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            border: 4px solid var(--yellow);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .game-card {
+            background: var(--cream);
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border: 8px solid;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .game-card:nth-child(1) {
+            border-color: var(--yellow);
+            background: linear-gradient(135deg, var(--cream) 0%, var(--yellow) 100%);
+        }
+        
+        .game-card:nth-child(2) {
+            border-color: var(--green);
+            background: linear-gradient(135deg, var(--cream) 0%, var(--green) 100%);
+        }
+        
+        .game-card:nth-child(3) {
+            border-color: var(--pink);
+            background: linear-gradient(135deg, var(--cream) 0%, var(--pink) 100%);
+        }
+        
+        .game-card:nth-child(4) {
+            border-color: var(--blue);
+            background: linear-gradient(135deg, var(--cream) 0%, var(--blue) 100%);
+        }
+        
+        .game-card:nth-child(5) {
+            border-color: var(--orange);
+            background: linear-gradient(135deg, var(--cream) 0%, var(--orange) 100%);
+        }
+        
+        .game-card:nth-child(6) {
+            border-color: var(--purple);
+            background: linear-gradient(135deg, var(--cream) 0%, var(--purple) 100%);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            z-index: 2;
+        }
+        
+        .game-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="white" opacity="0.1"/></svg>');
+            background-size: 80px 80px;
+            opacity: 0.3;
+        }
+        
+        .game-icon {
+            font-size: 4.5rem;
+            margin-bottom: 10px;
+            transition: transform 0.5s ease;
+            filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.2));
+        }
+        
+        .game-card:hover .game-icon {
+            transform: rotate(15deg) scale(1.2);
+        }
+        
+        .game-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
+        }
+        
+        .game-desc {
+            font-size: 1rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+            background: rgba(255,255,255,0.7);
+            padding: 8px;
+            border-radius: 10px;
+            border: 3px dotted;
+        }
+        
+        .game-card:nth-child(1) .game-desc {
+            border-color: var(--yellow);
+        }
+        
+        .game-card:nth-child(2) .game-desc {
+            border-color: var(--green);
+        }
+        
+        .game-card:nth-child(3) .game-desc {
+            border-color: var(--pink);
+        }
+        
+        .game-card:nth-child(4) .game-desc {
+            border-color: var(--blue);
+        }
+        
+        .game-card:nth-child(5) .game-desc {
+            border-color: var(--orange);
+        }
+        
+        .game-card:nth-child(6) .game-desc {
+            border-color: var(--purple);
+        }
+        
+        .game-number {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--dark-blue);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .play-btn {
+            background: var(--dark-blue);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+            border: 3px solid white;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+        }
+        
+        .play-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+            background: var(--red);
+        }
+        
+        .play-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 25px 20px;
+            border-top: 5px dashed var(--yellow);
+            font-size: 1.1rem;
+            color: var(--cream);
+            background: rgba(45, 49, 66, 0.9);
+            border-radius: 20px;
+            border: 4px solid var(--orange);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .footer-message {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--yellow);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .author-credits {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .created-by {
+            font-size: 1.1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .author-name {
+            font-weight: bold;
+            color: var(--yellow);
+            font-size: 1.2rem;
+        }
+        
+        .author-vk {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .author-vk a {
+            color: var(--light-blue);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--light-blue);
+        }
+        
+        .author-vk a:hover {
+            color: white;
+            background: rgba(133, 227, 255, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(133, 227, 255, 0.3);
+        }
+        
+        .vk-icon {
+            font-size: 1.2rem;
+        }
+        
+        .decoration {
+            position: fixed;
+            z-index: 0;
+            font-size: 8rem;
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        .dec1 { top: 5%; left: 5%; animation-delay: 0s; }
+        .dec2 { top: 15%; right: 10%; animation-delay: 4s; }
+        .dec3 { bottom: 10%; left: 8%; animation-delay: 8s; }
+        .dec4 { bottom: 20%; right: 5%; animation-delay: 12s; }
+        .dec5 { top: 40%; left: 3%; animation-delay: 16s; }
+        .dec6 { top: 60%; right: 3%; animation-delay: 20s; }
+        
+        .floating-objects {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .floating-item {
+            position: absolute;
+            font-size: 3rem;
+            animation: floatRandom 25s infinite linear;
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(-100px);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.1) translateY(20px);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(0.9) translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(20deg); }
+        }
+        
+        @keyframes floatRandom {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, 50px) rotate(90deg);
+            }
+            50% {
+                transform: translate(40px, 0) rotate(180deg);
+            }
+            75% {
+                transform: translate(20px, -50px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+                padding: 12px 20px;
+            }
+            
+            .header p {
+                font-size: 1.2rem;
+            }
+            
+            .game-card {
+                min-height: 220px;
+            }
+            
+            .game-icon {
+                font-size: 3.5rem;
+            }
+            
+            .game-title {
+                font-size: 1.6rem;
+            }
+            
+            .footer {
+                padding: 20px 15px;
+            }
+            
+            .author-credits {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+                text-shadow: 2px 2px 0 var(--yellow), 
+                            4px 4px 0 rgba(0,0,0,0.1);
+            }
+            
+            .game-title {
+                font-size: 1.4rem;
+            }
+            
+            .play-btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .footer-message {
+                font-size: 1.1rem;
+            }
+            
+            .created-by, .author-vk {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Декоративные элементы -->
+    <div class="decoration dec1">✏️</div>
+    <div class="decoration dec2">📚</div>
+    <div class="decoration dec3">🎒</div>
+    <div class="decoration dec4">📏</div>
+    <div class="decoration dec5">🎨</div>
+    <div class="decoration dec6">📐</div>
+    
+    <!-- Плавающие безопасные школьные предметы -->
+    <div class="floating-objects">
+        <div class="floating-item" style="top:10%; left:10%; animation-delay:0s;">🖊️</div>
+        <div class="floating-item" style="top:30%; left:80%; animation-delay:2s;">✏️</div>
+        <div class="floating-item" style="top:70%; left:15%; animation-delay:4s;">🖍️</div>
+        <div class="floating-item" style="top:50%; left:85%; animation-delay:6s;">📏</div>
+        <div class="floating-item" style="top:85%; left:70%; animation-delay:8s;">📐</div>
+        <div class="floating-item" style="top:20%; left:90%; animation-delay:10s;">🧮</div>
+        <div class="floating-item" style="top:60%; left:5%; animation-delay:12s;">📒</div>
+        <div class="floating-item" style="top:40%; left:95%; animation-delay:14s;">📙</div>
+        <div class="floating-item" style="top:90%; left:30%; animation-delay:16s;">🧽</div>
+        <div class="floating-item" style="top:15%; left:50%; animation-delay:18s;">✒️</div>
+    </div>
+    
+    <div class="menu-container">
+        <div class="header">
+            <h1>🎮 School Things Games 🎮</h1>
+            <p>Choose a game and start learning with fun!</p>
+        </div>
+        
+        <div class="games-grid">
+            <!-- ИГРА 1: Learn Words -->
+            <div class="game-card" onclick="window.location.href='learn-words.html'">
+                <div class="game-number">1</div>
+                <div class="game-icon">🎒</div>
+                <div class="game-title">Learn Words</div>
+                <div class="game-desc">Click pictures to hear words and learn school things</div>
+                <button class="play-btn">▶ Play Now</button>
+            </div>
+            
+            <!-- ИГРА 2: Find the Picture -->
+            <div class="game-card" onclick="window.location.href='find-picture.html'">
+                <div class="game-number">2</div>
+                <div class="game-icon">🔍</div>
+                <div class="game-title">Find the Picture</div>
+                <div class="game-desc">Listen and find the correct picture from choices</div>
+                <button class="play-btn">▶ Play Now</button>
+            </div>
+            
+            <!-- ИГРА 3: Give Me... -->
+            <div class="game-card" onclick="window.location.href='give-me.html'">
+                <div class="game-number">3</div>
+                <div class="game-icon">🎁</div>
+                <div class="game-title">Give Me...</div>
+                <div class="game-desc">Give the correct object when you hear its name</div>
+                <button class="play-btn">▶ Play Now</button>
+            </div>
+            
+            <!-- ИГРА 4: Pack the Bag -->
+            <div class="game-card" onclick="window.location.href='pack-bag.html'">
+                <div class="game-number">4</div>
+                <div class="game-icon">📚</div>
+                <div class="game-title">Pack the Bag</div>
+                <div class="game-desc">Drag and drop items into the schoolbag</div>
+                <button class="play-btn">▶ Play Now</button>
+            </div>
+            
+            <!-- ИГРА 5: Memory Game -->
+            <div class="game-card" onclick="window.location.href='memory-game.html'">
+                <div class="game-number">5</div>
+                <div class="game-icon">🎯</div>
+                <div class="game-title">Memory Game</div>
+                <div class="game-desc">Find matching pairs of school objects</div>
+                <button class="play-btn">▶ Play Now</button>
+            </div>
+            
+            <!-- ИГРА 6: Spot the Colour -->
+            <div class="game-card" onclick="window.location.href='find-colour.html'">
+                <div class="game-number">6</div>
+                <div class="game-icon">🎨</div>
+                <div class="game-title">Spot the Colour</div>
+                <div class="game-desc">Color school objects and learn their names</div>
+                <button class="play-btn">▶ Play Now</button>
+            </div>
+        </div>
+        
+        <!-- Обновлённый футер с информацией об авторе -->
+        <div class="footer">
+            <div class="footer-message">
+                🌈 Have fun learning school things! Click any game card to start playing! 🎨
+            </div>
+            
+            <div class="author-credits">
+                <div class="created-by">
+                    <span>Created by</span>
+                    <span class="author-name">Ioffe Natalia</span>
+                </div>
+                
+                <div class="author-vk">
+                    <a href="https://vk.com/ioffenat" target="_blank" title="Написать в VK">
+                        <span class="vk-icon">📝</span>
+                        <span>VK: @ioffenat</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Добавляем анимацию появления карточек
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.game-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'bounceIn 0.6s ease forwards';
+                card.style.opacity = '0';
+            });
+            
+            // Анимация для плавающих предметов
+            const floatingItems = document.querySelectorAll('.floating-item');
+            floatingItems.forEach((item, index) => {
+                const randomX = Math.random() * 80 + 10;
+                const randomY = Math.random() * 80 + 10;
+                const randomDelay = Math.random() * 10;
+                
+                item.style.left = randomX + '%';
+                item.style.top = randomY + '%';
+                item.style.animationDelay = randomDelay + 's';
+                item.style.animationDuration = (Math.random() * 15 + 15) + 's';
+            });
+            
+            // Плавный переход при клике
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('play-btn')) {
+                        e.stopPropagation();
+                    }
+                    
+                    // Плавное исчезновение перед переходом
+                    document.body.style.opacity = '0.8';
+                    document.body.style.transition = 'opacity 0.3s ease';
+                });
+            });
+            
+            // Анимация для футера
+            const footer = document.querySelector('.footer');
+            setTimeout(() => {
+                footer.style.transform = 'translateY(10px)';
+                footer.style.opacity = '0.9';
+                setTimeout(() => {
+                    footer.style.transform = 'translateY(0)';
+                    footer.style.opacity = '1';
+                }, 300);
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

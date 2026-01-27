@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Give Me... - School Things</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 650px;
+            background: #f0f7ff; /* Изменено на светло-голубой цвет */
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 2px solid #c5d9ff; /* Добавлена рамка */
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-shadow: 2px 2px 0 #ffe66d;
+        }
+        
+        #instruction {
+            font-size: 22px;
+            color: #333;
+            margin: 10px 0;
+            min-height: 50px;
+            text-align: center;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 15px;
+            border: 2px dashed #6a89cc;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .character-with-speaker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 0;
+        }
+        
+        .character {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .character-img {
+            width: 90px;
+            height: 90px;
+            background: #e17055;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            border: 4px solid #d35400;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Динамик рядом с медведем */
+        .speaker-btn {
+            background: linear-gradient(to bottom, #6a89cc, #4a69bd);
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 26px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 15px rgba(106, 137, 204, 0.4);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .speaker-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(106, 137, 204, 0.6);
+            background: linear-gradient(to bottom, #5a79bc, #3a59ad);
+        }
+        
+        .speaker-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .character-name {
+            font-size: 20px;
+            color: #e17055;
+            margin-top: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Найденные предметы под медведем */
+        .found-items {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 8px 0 12px 0;
+            min-height: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .found-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: appear 0.5s;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+            border: 2px solid #6a89cc;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .found-item img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+        
+        .found-item div {
+            font-size: 10px;
+            color: #333;
+            margin-top: 2px;
+            text-align: center;
+            max-width: 55px;
+            word-break: break-word;
+        }
+        
+        /* ПРЕДМЕТЫ ДЛЯ ВЫБОРА */
+        .items-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px; /* Увеличен отступ */
+            margin: 15px 0;
+        }
+        
+        .item {
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid #6a89cc; /* Более толстая рамка */
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+            padding: 10px 5px;
+            user-select: none;
+        }
+        
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-color: #ff6b6b;
+            background: #f8fcff;
+        }
+        
+        .item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 6px;
+            pointer-events: none;
+        }
+        
+        .item span {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        /* СООБЩЕНИЯ */
+        .messages {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 8px 0;
+        }
+        
+        .message {
+            font-size: 17px;
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+        
+        .correct-message {
+            background: #00b894;
+            color: white;
+            border: 2px solid #009b7d;
+        }
+        
+        .wrong-message {
+            background: #d63031;
+            color: white;
+            border: 2px solid #b02121;
+        }
+        
+        /* КНОПКИ */
+        .bottom-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Увеличен отступ между кнопками */
+            margin-top: 15px;
+        }
+        
+        /* КНОПКА MENU - теперь слева */
+        .menu-btn {
+            background: linear-gradient(to right, #00b894, #00a085);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 12px rgba(0, 184, 148, 0.4);
+            border: 2px solid #009b7d;
+        }
+        
+        .menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 15px rgba(0, 184, 148, 0.6);
+        }
+        
+        /* КНОПКА NEXT - теперь справа */
+        .next-btn {
+            background: linear-gradient(to right, #6a89cc, #4a69bd);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 12px rgba(106, 137, 204, 0.4);
+            border: 2px solid #4a69bd;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 15px rgba(106, 137, 204, 0.6);
+        }
+        
+        /* АНИМАЦИИ */
+        @keyframes flyToBear {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--target-x), var(--target-y)) scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .flying {
+            animation: flyToBear 0.8s forwards;
+            position: fixed;
+            z-index: 1000;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .bounce {
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes appear {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* Анимация для динамика */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .speaker-btn.pulse {
+            animation: pulse 0.5s;
+        }
+        
+        /* Уже найденные предметы */
+        .item.found {
+            opacity: 0.4;
+            cursor: default;
+            transform: none;
+            border-color: #ccc;
+            background: #f5f5f5;
+        }
+        
+        .item.found:hover {
+            transform: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #ccc;
+        }
+        
+        @media (max-width: 600px) {
+            .items-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .character-with-speaker {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .speaker-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+            }
+            
+            .character-img {
+                width: 75px;
+                height: 75px;
+                font-size: 38px;
+            }
+            
+            h1 {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+            
+            #instruction {
+                font-size: 19px;
+                margin: 8px 0;
+                padding: 8px;
+            }
+            
+            .bottom-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .menu-btn, .next-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎁 Give Me... 🎁</h1>
+        
+        <div id="instruction">
+            👇 Listen to what Teddy needs!
+        </div>
+        
+        <!-- КОМПАКТНАЯ ИГРОВАЯ ОБЛАСТЬ -->
+        <div class="game-area">
+            <!-- Медведь и динамик рядом -->
+            <div class="character-with-speaker">
+                <!-- Медведь -->
+                <div class="character">
+                    <div class="character-img" id="characterImg">
+                        🐻
+                    </div>
+                    <div class="character-name">
+                        Teddy Bear
+                    </div>
+                </div>
+                
+                <!-- Динамик рядом -->
+                <button class="speaker-btn" id="speakerBtn">
+                    🔈
+                </button>
+            </div>
+            
+            <!-- Найденные предметы под медведем -->
+            <div class="found-items" id="foundItems">
+                <!-- Найденные предметы появятся здесь -->
+            </div>
+            
+            <!-- Предметы для выбора -->
+            <div class="items-container" id="itemsContainer">
+                <!-- Предметы появятся здесь -->
+            </div>
+            
+            <!-- Сообщения -->
+            <div class="messages">
+                <div class="message correct-message" id="correctMessage">
+                    🎉 Thank you! That's right!
+                </div>
+                
+                <div class="message wrong-message" id="wrongMessage">
+                    🤔 Hmm... I needed something else
+                </div>
+            </div>
+        </div>
+        
+        <!-- КНОПКИ (МЕНЯЕМ ПОРЯДОК) -->
+        <div class="bottom-buttons">
+            <button class="menu-btn" onclick="window.location.href='menu.html'">
+                🏠 Menu
+            </button>
+            
+            <button class="next-btn" onclick="nextRequest()" id="nextBtn">
+                Next
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1. ДАННЫЕ ДЛЯ ИГРЫ
+        const words = [
+            { name: 'schoolbag', displayName: 'SCHOOLBAG', image: 'images/schoolbag.png' },
+            { name: 'pencil', displayName: 'PENCIL', image: 'images/pencil.png' },
+            { name: 'pencil case', displayName: 'PENCIL CASE', image: 'images/pencil_case.png' },
+            { name: 'scissors', displayName: 'SCISSORS', image: 'images/scissors.png' },
+            { name: 'glue', displayName: 'GLUE', image: 'images/glue.png' },
+            { name: 'book', displayName: 'BOOK', image: 'images/book.png' }
+        ];
+
+        // 2. ПЕРЕМЕННЫЕ ИГРЫ
+        let requestedItems = [];
+        let foundItems = [];
+        let currentRequest = '';
+        let canInteract = false;
+
+        // 3. ЭЛЕМЕНТЫ СТРАНИЦЫ
+        const instructionEl = document.getElementById('instruction');
+        const speakerBtn = document.getElementById('speakerBtn');
+        const characterImg = document.getElementById('characterImg');
+        const foundItemsEl = document.getElementById('foundItems');
+        const itemsContainer = document.getElementById('itemsContainer');
+        const correctMessage = document.getElementById('correctMessage');
+        const wrongMessage = document.getElementById('wrongMessage');
+
+        // 4. ФУНКЦИЯ ОЗВУЧКИ
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            utterance.pitch = 1.1;
+            
+            // Анимация динамика во время речи
+            speakerBtn.classList.add('pulse');
+            
+            utterance.onend = function() {
+                canInteract = true;
+                updateInstruction();
+                speakerBtn.classList.remove('pulse');
+            };
+            
+            utterance.onerror = function() {
+                speakerBtn.classList.remove('pulse');
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 5. СОЗДАНИЕ НОВОГО ЗАПРОСА
+        function createNewRequest() {
+            // Сброс
+            foundItems = [];
+            foundItemsEl.innerHTML = '';
+            correctMessage.style.display = 'none';
+            wrongMessage.style.display = 'none';
+            
+            // Выбор 1-2 предметов для запроса
+            const itemCount = Math.random() > 0.5 ? 1 : 2;
+            requestedItems = [];
+            
+            // Копируем массив слов и перемешиваем
+            let availableWords = [...words];
+            shuffleArray(availableWords);
+            
+            // Берем нужное количество предметов
+            for (let i = 0; i < itemCount && i < availableWords.length; i++) {
+                requestedItems.push(availableWords[i]);
+            }
+            
+            // Создаем текстовый запрос
+            if (requestedItems.length === 1) {
+                currentRequest = `Give me the ${requestedItems[0].name}.`;
+            } else {
+                currentRequest = `Give me the ${requestedItems[0].name} and the ${requestedItems[1].name}.`;
+            }
+            
+            // Показываем все предметы для выбора
+            generateAllItems();
+            
+            // Обновляем инструкцию
+            instructionEl.innerHTML = '👇 Listen to what Teddy needs!';
+            
+            canInteract = false;
+        }
+
+        // 6. ГЕНЕРАЦИЯ ВСЕХ ПРЕДМЕТОВ
+        function generateAllItems() {
+            itemsContainer.innerHTML = '';
+            
+            // Перемешиваем слова
+            let shuffledWords = [...words];
+            shuffleArray(shuffledWords);
+            
+            // Создаем карточки для всех предметов
+            shuffledWords.forEach(word => {
+                const item = document.createElement('div');
+                item.className = 'item';
+                item.dataset.word = word.name;
+                
+                item.innerHTML = `
+                    <img src="${word.image}" 
+                         alt="${word.name}"
+                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'">
+                    <span>${word.displayName}</span>
+                `;
+                
+                // Обработчик клика
+                item.addEventListener('click', () => handleItemClick(word.name, item));
+                
+                itemsContainer.appendChild(item);
+            });
+        }
+
+        // 7. ОБРАБОТКА КЛИКА ПО ПРЕДМЕТУ
+        function handleItemClick(word, itemElement) {
+            if (!canInteract) return;
+            if (foundItems.includes(word)) return; // Уже найден
+            
+            // Находим координаты медведя для анимации
+            const itemRect = itemElement.getBoundingClientRect();
+            const bearRect = characterImg.getBoundingClientRect();
+            
+            // Создаем летающую картинку
+            const flyingImg = document.createElement('img');
+            flyingImg.src = itemElement.querySelector('img').src;
+            flyingImg.style.cssText = `
+                position: fixed;
+                left: ${itemRect.left + itemRect.width/2}px;
+                top: ${itemRect.top + itemRect.height/2}px;
+                width: 50px;
+                height: 50px;
+                z-index: 1000;
+                pointer-events: none;
+            `;
+            
+            document.body.appendChild(flyingImg);
+            
+            // Рассчитываем полет к медведю
+            const targetX = bearRect.left + bearRect.width/2 - (itemRect.left + itemRect.width/2);
+            const targetY = bearRect.top + bearRect.height/2 - (itemRect.top + itemRect.height/2);
+            
+            flyingImg.style.setProperty('--target-x', `${targetX}px`);
+            flyingImg.style.setProperty('--target-y', `${targetY}px`);
+            flyingImg.classList.add('flying');
+            
+            // После анимации обрабатываем выбор
+            setTimeout(() => {
+                document.body.removeChild(flyingImg);
+                processItemSelection(word, itemElement);
+            }, 800);
+        }
+
+        // 8. ОБРАБОТКА ВЫБРАННОГО ПРЕДМЕТА
+        function processItemSelection(word, itemElement) {
+            // Проверяем, нужен ли этот предмет
+            const isNeeded = requestedItems.some(item => item.name === word);
+            
+            if (isNeeded) {
+                // Правильный предмет!
+                foundItems.push(word);
+                
+                // Добавляем к медведю
+                const wordObj = words.find(w => w.name === word);
+                const foundItem = document.createElement('div');
+                foundItem.className = 'found-item';
+                foundItem.innerHTML = `
+                    <img src="${wordObj.image}" alt="${word}">
+                    <div>${wordObj.displayName}</div>
+                `;
+                foundItemsEl.appendChild(foundItem);
+                
+                // Помечаем предмет как найденный
+                itemElement.classList.add('found');
+                
+                // Анимация медведя
+                characterImg.classList.add('bounce');
+                setTimeout(() => characterImg.classList.remove('bounce'), 500);
+                
+                // Проверяем, все ли найдено
+                if (foundItems.length === requestedItems.length) {
+                    // Все найдено!
+                    canInteract = false;
+                    
+                    setTimeout(() => {
+                        speak("Thank you! You found everything!");
+                    }, 500);
+                } else {
+                    // Найдено, но не всё
+                    correctMessage.style.display = 'block';
+                    setTimeout(() => {
+                        correctMessage.style.display = 'none';
+                    }, 1500);
+                    
+                    speak("Thank you!");
+                }
+            } else {
+                // Неправильный предмет
+                wrongMessage.style.display = 'block';
+                setTimeout(() => {
+                    wrongMessage.style.display = 'none';
+                }, 1500);
+                
+                speak("Hmm... I need something else.");
+            }
+        }
+
+        // 9. ОБНОВЛЕНИЕ ИНСТРУКЦИИ
+        function updateInstruction() {
+            if (foundItems.length === requestedItems.length) {
+                instructionEl.innerHTML = '🎉 You found everything! Click "Next"';
+            } else if (foundItems.length > 0) {
+                instructionEl.innerHTML = `Good! Now find ${requestedItems.length - foundItems.length} more item(s)`;
+            } else {
+                instructionEl.innerHTML = `👉 Click on what Teddy needs`;
+            }
+        }
+
+        // 10. СЛЕДУЮЩИЙ ЗАПРОС
+        function nextRequest() {
+            createNewRequest();
+            
+            // Говорим новый запрос через секунду
+            setTimeout(() => {
+                speak(currentRequest);
+            }, 800);
+        }
+
+        // 11. КНОПКА ДИНАМИКА
+        speakerBtn.onclick = function() {
+            if (currentRequest) {
+                speak(currentRequest);
+                this.classList.add('pulse');
+            }
+        };
+
+        // 12. ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 13. ЗАПУСК ИГРЫ
+        window.onload = function() {
+            createNewRequest();
+            
+            // Автоматически говорим первый запрос через 1 секунду
+            setTimeout(() => {
+                speak(currentRequest);
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
