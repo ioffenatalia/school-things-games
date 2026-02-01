@@ -215,9 +215,10 @@
             100% { transform: translateX(0); }
         }
         
+        /* КНОПКА МЕНЮ ТЕПЕРЬ ЗАНИМАЕТ ВСЮ ШИРИНУ */
         .buttons-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             gap: 15px;
             margin-top: 20px;
         }
@@ -235,34 +236,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex: 1;
             justify-content: center;
+            width: 100%;
         }
         
         .menu-btn:hover {
             transform: scale(1.05);
             background: linear-gradient(to right, #45b7b0, #3d8f7d);
-        }
-        
-        .next-btn {
-            background: linear-gradient(to right, #ff6b6b, #ff8e53);
-            color: white;
-            border: none;
-            border-radius: 40px;
-            padding: 15px 30px;
-            font-size: 22px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            justify-content: center;
-        }
-        
-        .next-btn:hover {
-            transform: scale(1.05);
         }
         
         /* Адаптивность для очень маленьких экранов */
@@ -308,7 +288,7 @@
                 gap: 10px;
             }
             
-            .menu-btn, .next-btn {
+            .menu-btn {
                 font-size: 20px;
                 padding: 14px 25px;
             }
@@ -328,7 +308,7 @@
                 🔈
             </button>
             
-            <!-- СТРЕЛОЧКА-ПОДСКАЗКА (ИСПРАВЛЕНА) -->
+            <!-- СТРЕЛОЧКА-ПОДСКАЗКА -->
             <div class="speaker-hint" id="speakerHint">
                 <div class="hint-text">Click me!</div>
                 <div class="arrow">👈</div>
@@ -344,14 +324,10 @@
             <!-- Картинки появятся здесь -->
         </div>
         
-        <!-- КОНТЕЙНЕР ДЛЯ КНОПОК -->
+        <!-- КОНТЕЙНЕР ДЛЯ КНОПКИ МЕНЮ -->
         <div class="buttons-container">
             <button class="menu-btn" onclick="window.location.href='index.html'">
                 🏠 Menu
-            </button>
-            
-            <button class="next-btn" onclick="nextRound()">
-                Next Round ➡️
             </button>
         </div>
     </div>
@@ -380,7 +356,7 @@
         const picturesContainer = document.getElementById('picturesContainer');
         const scoreEl = document.getElementById('score');
 
-        // 5. ФУНКЦИЯ ОЗВУЧКИ
+        // 4. ФУНКЦИЯ ОЗВУЧКИ
         function speak(text) {
             window.speechSynthesis.cancel();
             
@@ -402,7 +378,7 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // 6. НАЧАЛО НОВОГО РАУНДА
+        // 5. НАЧАЛО НОВОГО РАУНДА
         function startNewRound() {
             // Показываем подсказку
             speakerHint.style.display = 'flex';
@@ -423,7 +399,7 @@
             canClick = false;
         }
 
-        // 7. ГЕНЕРАЦИЯ 4 КАРТИНОК (2 сверху, 2 снизу)
+        // 6. ГЕНЕРАЦИЯ 4 КАРТИНОК (2 сверху, 2 снизу)
         function generatePictures() {
             picturesContainer.innerHTML = '';
             
@@ -438,7 +414,7 @@
                 selectedWords.push(shuffledAvailable[i].name);
             }
             
-            // Если все еще меньше 4 слов, добавляем случайные (может быть повтор, но это крайний случай)
+            // Если все еще меньше 4 слов, добавляем случайные
             while (selectedWords.length < 4) {
                 const randomWord = words[Math.floor(Math.random() * words.length)].name;
                 if (!selectedWords.includes(randomWord)) {
@@ -479,35 +455,37 @@
             });
         }
 
-        // 8. ОБРАБОТКА КЛИКА - ТОЛЬКО ГОЛОСОВАЯ ОБРАТНАЯ СВЯЗЬ
+        // 7. ОБРАБОТКА КЛИКА
         function handleCardClick(clickedWord, cardElement) {
             canClick = false;
             
             if (clickedWord === currentTarget) {
-                // Правильно - только голос
+                // Правильно
                 cardElement.classList.add('correct');
                 score += 10;
                 scoreEl.textContent = score;
                 
                 // Обновляем инструкцию
-                instructionEl.innerHTML = `🎉 Great! Find another word!`;
+                instructionEl.innerHTML = `🎉 Great!`;
                 
-                // Только голосовая похвала
+                // Похвала и автоматический переход к следующему раунду
                 setTimeout(() => {
-                    speak("Excellent! You found it!");
-                    // Автоматически переходим к следующему раунду через 2 секунды
+                    speak("Excellent!");
+                    
+                    // Через 1.5 секунды начинаем новый раунд
                     setTimeout(() => {
                         startNewRound();
-                    }, 2000);
+                    }, 1500);
+                    
                 }, 300);
             } else {
-                // Неправильно - только голос
+                // Неправильно
                 cardElement.classList.add('wrong');
                 
                 // Обновляем инструкцию
                 instructionEl.innerHTML = `👂 Listen again and try!`;
                 
-                // Только голосовая подсказка
+                // Подсказка
                 setTimeout(() => {
                     speak(`Try again! Listen for ${currentTarget}`);
                 }, 300);
@@ -520,12 +498,7 @@
             }
         }
 
-        // 9. СЛЕДУЮЩИЙ РАУНД
-        function nextRound() {
-            startNewRound();
-        }
-
-        // 10. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // 8. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -534,7 +507,7 @@
             return array;
         }
 
-        // 11. КНОПКА ДИНАМИКА
+        // 9. КНОПКА ДИНАМИКА
         speakerBtn.onclick = function() {
             speak(`Find the ${currentTarget}`);
             this.innerHTML = '🔊';
@@ -545,7 +518,7 @@
             }, 300);
         };
 
-        // 12. ЗАПУСК ИГРЫ
+        // 10. ЗАПУСК ИГРЫ
         window.onload = function() {
             startNewRound();
             
