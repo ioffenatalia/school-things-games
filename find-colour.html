@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Colour Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         * {
             margin: 0;
@@ -12,59 +13,76 @@
         body {
             font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
             background: linear-gradient(135deg, #ffd166 0%, #ff9e6d 100%);
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 0;
-            overflow: hidden;
+            padding: 15px;
+            overflow-x: hidden;
         }
         
         .container {
             width: 100%;
-            max-width: 800px;
-            height: 95vh;
+            max-width: 850px;
+            height: auto;
+            min-height: 95vh;
             background: white;
             border-radius: 25px;
-            padding: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             text-align: center;
             display: flex;
             flex-direction: column;
             margin: 0;
         }
         
-        /* ЗАГОЛОВОК */
+        /* ЗАГОЛОВОК - КОМПАКТНЫЙ */
         .header {
             flex-shrink: 0;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
         }
         
         h1 {
             color: #ff6b6b;
             font-size: 28px;
-            margin: 0;
+            margin: 0 0 8px 0;
             text-shadow: 2px 2px 0 #ffd166;
         }
         
         #instruction {
             font-size: 20px;
             color: #333;
-            margin: 8px 0;
-            padding: 8px;
+            margin: 0;
+            padding: 10px 15px;
             background: #f0f7ff;
-            border-radius: 10px;
-            border: 2px solid #6a89cc;
+            border-radius: 12px;
+            border: 3px solid #6a89cc;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        /* КНОПКА ДИНАМИКА И СЧЕТЧИК - КОМПАКТНЕЕ */
-        .top-controls {
+        /* СЧЕТЧИК И КНОПКА АУДИО В ОДНОЙ ЛИНИИ */
+        .controls-row {
             flex-shrink: 0;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            margin: 8px 0;
+            margin: 15px 0;
+            padding: 0 10px;
+        }
+        
+        .counter {
+            font-size: 22px;
+            color: #6a89cc;
+            font-weight: bold;
+            background: #f0f7ff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 3px solid #dbe4ff;
+            box-shadow: 0 6px 15px rgba(106, 137, 204, 0.2);
+            white-space: nowrap;
         }
         
         .speaker-btn {
@@ -73,84 +91,110 @@
             border-radius: 50%;
             width: 65px;
             height: 65px;
-            font-size: 32px;
+            font-size: 30px;
             cursor: pointer;
             color: white;
             transition: transform 0.2s;
-            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+            flex-shrink: 0;
         }
         
         .speaker-btn:hover {
             transform: scale(1.1);
         }
         
-        .counter {
-            font-size: 22px;
-            color: #6a89cc;
-            font-weight: bold;
-            background: #f0f7ff;
-            padding: 8px 18px;
-            border-radius: 18px;
-            border: 3px solid #dbe4ff;
-            box-shadow: 0 4px 12px rgba(106, 137, 204, 0.2);
-        }
-        
-        /* ПРЕДМЕТЫ - УМЕНЬШИЛИ НА 10% */
+        /* ОСНОВНАЯ ОБЛАСТЬ С ПРЕДМЕТАМИ */
         .items-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             min-height: 0;
-            margin: 5px 0;
+            margin: 10px 0;
+            width: 100%;
         }
         
         .items-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 12px;
+            gap: 15px;
             height: 100%;
-            padding: 8px;
+            width: 100%;
+            padding: 10px;
         }
         
+        /* ПЛАШКИ С КНОПКАМИ НАД КАРТИНКАМИ */
         .colour-item {
             background: white;
             border-radius: 15px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            border: 5px solid; /* Уменьшили с 6px */
+            border: 5px solid;
             box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 100%;
+            min-height: 180px;
+        }
+        
+        /* КНОПКА НА ПЛАШКЕ - ЦВЕТ ПЛАШКИ */
+        .item-button {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
+            padding: 0 10px;
+            flex-shrink: 0;
+        }
+        
+        /* ОБЛАСТЬ КАРТИНКИ */
+        .item-image-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 10px;
         }
         
-        .colour-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        
-        .colour-item img {
-            width: 70px; /* Было 80px */
-            height: 70px;
+        .item-image-container img {
+            width: 80px;
+            height: 80px;
             object-fit: contain;
-            margin-bottom: 8px;
         }
         
+        /* НАЗВАНИЕ ПРЕДМЕТА */
         .item-name {
-            font-size: 16px; /* Было 18px */
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
             font-weight: bold;
             color: #333;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            padding: 0 10px;
+            flex-shrink: 0;
         }
         
-        /* СООБЩЕНИЯ - КОМПАКТНЕЕ */
+        .colour-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* СООБЩЕНИЯ */
         .messages-container {
             flex-shrink: 0;
-            min-height: 60px;
-            margin: 5px 0;
+            min-height: 80px;
+            margin: 10px 0 15px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -158,39 +202,40 @@
         }
         
         .message {
-            font-size: 22px; /* Было 26px */
-            padding: 10px 18px;
+            font-size: 22px;
+            padding: 12px 25px;
             border-radius: 12px;
-            margin: 4px auto;
+            margin: 8px auto;
             display: none;
-            max-width: 350px;
+            max-width: 400px;
             animation: messageAppear 0.3s;
+            line-height: 1.3;
         }
         
         .correct-message {
             background: #4CAF50;
             color: white;
-            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
         }
         
         .wrong-message {
             background: #ff6b6b;
             color: white;
-            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
         }
         
-        /* КНОПКА МЕНЮ - МЕНЬШЕ И НИЖЕ */
+        /* КНОПКА МЕНЮ - КОМПАКТНАЯ */
         .menu-btn {
             background: #ff9e00;
             color: white;
             border: none;
             border-radius: 20px;
-            padding: 10px 25px;
+            padding: 12px 30px;
             font-size: 18px;
             cursor: pointer;
-            margin: 5px 0 3px 0;
+            margin: 5px 0 0 0;
             transition: transform 0.2s;
-            box-shadow: 0 6px 15px rgba(255, 158, 0, 0.4);
+            box-shadow: 0 8px 20px rgba(255, 158, 0, 0.4);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -223,11 +268,16 @@
             animation: shake 0.5s;
         }
         
-        /* МЕДИА-ЗАПРОСЫ */
-        @media (max-height: 700px) {
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* АДАПТИВНОСТЬ */
+        @media (max-width: 768px) {
             .container {
-                height: 98vh;
-                padding: 10px;
+                padding: 15px;
+                max-width: 95vw;
             }
             
             h1 {
@@ -236,17 +286,38 @@
             
             #instruction {
                 font-size: 18px;
-                padding: 6px;
-            }
-            
-            .colour-item img {
-                width: 60px;
-                height: 60px;
+                min-height: 55px;
+                padding: 8px 12px;
             }
             
             .items-grid {
-                gap: 10px;
-                padding: 6px;
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .colour-item {
+                min-height: 160px;
+            }
+            
+            .item-button {
+                height: 35px;
+                font-size: 15px;
+            }
+            
+            .item-image-container img {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .item-name {
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .counter {
+                font-size: 20px;
+                padding: 8px 16px;
             }
             
             .speaker-btn {
@@ -255,70 +326,71 @@
                 font-size: 28px;
             }
             
-            .counter {
-                font-size: 20px;
-                padding: 6px 15px;
-            }
-            
             .message {
                 font-size: 20px;
-                padding: 8px 15px;
+                padding: 10px 20px;
             }
             
             .menu-btn {
-                padding: 8px 20px;
+                padding: 10px 25px;
                 font-size: 16px;
             }
         }
         
-        @media (max-width: 600px) {
-            .container {
-                border-radius: 20px;
+        @media (max-width: 480px) {
+            body {
                 padding: 10px;
             }
             
+            .container {
+                padding: 12px;
+                border-radius: 20px;
+            }
+            
             h1 {
-                font-size: 24px;
+                font-size: 22px;
+                margin-bottom: 6px;
+            }
+            
+            #instruction {
+                font-size: 16px;
+                min-height: 50px;
+                padding: 6px 10px;
+            }
+            
+            .controls-row {
+                margin: 10px 0;
+                padding: 0 5px;
             }
             
             .items-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
                 gap: 10px;
+                padding: 5px;
             }
             
             .colour-item {
-                padding: 8px;
+                min-height: 140px;
                 border-width: 4px;
             }
             
-            .colour-item img {
+            .item-button {
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .item-image-container img {
                 width: 60px;
                 height: 60px;
             }
             
             .item-name {
-                font-size: 14px;
-            }
-        }
-        
-        @media (max-width: 400px) {
-            h1 {
-                font-size: 22px;
+                height: 30px;
+                font-size: 13px;
             }
             
-            #instruction {
-                font-size: 16px;
-            }
-            
-            .colour-item img {
-                width: 55px;
-                height: 55px;
-            }
-            
-            .items-grid {
-                gap: 8px;
-                padding: 5px;
+            .counter {
+                font-size: 18px;
+                padding: 6px 14px;
             }
             
             .speaker-btn {
@@ -327,30 +399,158 @@
                 font-size: 26px;
             }
             
-            .top-controls {
-                gap: 10px;
+            .message {
+                font-size: 18px;
+                padding: 8px 16px;
+            }
+            
+            .menu-btn {
+                padding: 8px 20px;
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-height: 700px) {
+            .container {
+                padding: 15px;
+                min-height: 98vh;
+            }
+            
+            .header {
+                margin-bottom: 10px;
+            }
+            
+            #instruction {
+                min-height: 50px;
+                padding: 8px 12px;
+            }
+            
+            .controls-row {
+                margin: 10px 0;
+            }
+            
+            .items-container {
+                margin: 8px 0;
+            }
+            
+            .colour-item {
+                min-height: 150px;
+            }
+            
+            .item-button {
+                height: 32px;
+            }
+            
+            .item-image-container img {
+                width: 65px;
+                height: 65px;
+            }
+            
+            .item-name {
+                height: 32px;
+                font-size: 14px;
+            }
+            
+            .messages-container {
+                min-height: 70px;
+                margin: 8px 0 10px 0;
+            }
+            
+            .menu-btn {
+                margin: 3px 0 0 0;
+                padding: 10px 20px;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .colour-item {
+                min-height: 130px;
+            }
+            
+            .item-button {
+                height: 28px;
+                font-size: 13px;
+            }
+            
+            .item-image-container img {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .item-name {
+                height: 28px;
+                font-size: 12px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            #instruction {
+                font-size: 15px;
+            }
+            
+            .counter {
+                font-size: 16px;
+            }
+            
+            .speaker-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+        }
+        
+        /* ДЛЯ ОЧЕНЬ ШИРОКИХ ЭКРАНОВ */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 900px;
+            }
+            
+            .items-grid {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .colour-item {
+                min-height: 200px;
+            }
+            
+            .item-button {
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .item-image-container img {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .item-name {
+                height: 45px;
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ВЕРХНЯЯ ЧАСТЬ -->
+        <!-- ЗАГОЛОВОК -->
         <div class="header">
             <h1>🎨 Find the Colour!</h1>
             <div id="instruction">Listen and find the right colour!</div>
         </div>
         
-        <!-- КНОПКА И СЧЕТЧИК РЯДОМ -->
-        <div class="top-controls">
-            <button class="speaker-btn" id="speakerBtn">🔊</button>
+        <!-- СЧЕТЧИК И КНОПКА АУДИО -->
+        <div class="controls-row">
             <div class="counter">Found: <span id="score">0</span></div>
+            <button class="speaker-btn" id="speakerBtn">🔊</button>
         </div>
         
-        <!-- 6 ПРЕДМЕТОВ -->
+        <!-- 6 ПРЕДМЕТОВ С КНОПКАМИ НА ПЛАШКАХ -->
         <div class="items-container">
             <div class="items-grid" id="itemsGrid">
-                <!-- Все 6 предметов -->
+                <!-- Все 6 предметов будут созданы через JS -->
             </div>
         </div>
         
@@ -358,9 +558,10 @@
         <div class="messages-container">
             <div class="message correct-message" id="correctMessage">🎉 Excellent!</div>
             <div class="message wrong-message" id="wrongMessage">❌ Try again!</div>
- <button class="menu-btn" onclick="window.location.href='index.html'">
-    🏠 Menu
-</button>
+            <button class="menu-btn" onclick="window.location.href='index.html'">
+                🏠 Menu
+            </button>
+        </div>
     </div>
 
     <script>
@@ -407,20 +608,21 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // НОВЫЙ РАУНД
-        function startNewRound() {
-            currentColour = colours[Math.floor(Math.random() * colours.length)];
-            
-            correctMessage.style.display = 'none';
-            wrongMessage.style.display = 'none';
-            
-            createAllItems();
-            
-            instructionEl.innerHTML = `Listen and find <strong>${currentColour.audio}</strong>!`;
-            
-            canInteract = false;
-            setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
-        }
+ // НОВЫЙ РАУНД
+function startNewRound() {
+    currentColour = colours[Math.floor(Math.random() * colours.length)];
+    
+    correctMessage.style.display = 'none';
+    wrongMessage.style.display = 'none';
+    
+    createAllItems();
+    
+    // ДОБАВЛЕН ПРОБЕЛ ПЕРЕД НАЗВАНИЕМ ЦВЕТА
+ instructionEl.innerHTML = `Listen and find:         <strong>${currentColour.audio}</strong>!`;
+    
+    canInteract = false;
+    setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
+}
 
         // СОЗДАТЬ ВСЕ 6 ПРЕДМЕТОВ
         function createAllItems() {
@@ -434,12 +636,26 @@
                 itemElement.style.borderColor = item.colourValue;
                 
                 itemElement.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}"
-                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'">
+                    <button class="item-button" style="background: ${item.colourValue};">
+                        ${item.colour}
+                    </button>
+                    <div class="item-image-container">
+                        <img src="${item.image}" alt="${item.name}"
+                             onerror="this.src='https://cdn-icons-png.flaticon.com/512/3767/3767084.png'">
+                    </div>
                     <div class="item-name">${item.name.toUpperCase()}</div>
                 `;
                 
+                // Клик на всю плашку
                 itemElement.addEventListener('click', () => handleItemClick(item, itemElement));
+                
+                // Также клик на кнопку цвета
+                const colorBtn = itemElement.querySelector('.item-button');
+                colorBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Предотвращаем двойной вызов
+                    handleItemClick(item, itemElement);
+                });
+                
                 itemsGrid.appendChild(itemElement);
             });
         }
@@ -457,7 +673,6 @@
                 
                 // Подсветка правильного предмета
                 itemElement.style.boxShadow = `0 0 20px ${item.colourValue}, 0 10px 20px rgba(0,0,0,0.15)`;
-                itemElement.style.borderWidth = '6px';
                 
                 correctMessage.style.display = 'block';
                 
@@ -473,7 +688,6 @@
                     correctMessage.style.display = 'none';
                     itemElement.classList.remove('bounce');
                     itemElement.style.boxShadow = '0 6px 15px rgba(0,0,0,0.1)';
-                    itemElement.style.borderWidth = '5px';
                     startNewRound();
                 }, 1500);
             } else {
@@ -514,6 +728,22 @@
 
         // ЗАПУСК
         window.onload = startNewRound;
+        
+        // Предотвращаем масштабирование на мобильных устройствах
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     </script>
 </body>
 </html>
