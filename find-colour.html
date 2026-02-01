@@ -586,8 +586,10 @@
 
         // ПЕРЕМЕННЫЕ
         let currentColour = null;
+        let previousColourName = null; // ДОБАВЛЕНО: для предотвращения повторений
         let score = 0;
         let canInteract = true;
+        let isSpeechPlaying = false; // ДОБАВЛЕНО: отслеживаем воспроизведение речи
 
         // ЭЛЕМЕНТЫ
         const instructionEl = document.getElementById('instruction');
@@ -599,30 +601,82 @@
 
         // ОЗВУЧКА
         function speak(text) {
+            // Останавливаем предыдущую речь
             window.speechSynthesis.cancel();
+            
+            isSpeechPlaying = true;
+            
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
             utterance.rate = 0.7;
             utterance.pitch = 1.0;
-            utterance.onend = () => canInteract = true;
+            
+            utterance.onend = function() {
+                isSpeechPlaying = false;
+                // Разрешаем взаимодействие через небольшую паузу
+                setTimeout(() => {
+                    canInteract = true;
+                }, 300);
+            };
+            
+            utterance.onerror = function() {
+                isSpeechPlaying = false;
+                canInteract = true;
+            };
+            
             window.speechSynthesis.speak(utterance);
         }
 
- // НОВЫЙ РАУНД
-function startNewRound() {
-    currentColour = colours[Math.floor(Math.random() * colours.length)];
-    
-    correctMessage.style.display = 'none';
-    wrongMessage.style.display = 'none';
-    
-    createAllItems();
-    
-    // ДОБАВЛЕН ПРОБЕЛ ПЕРЕД НАЗВАНИЕМ ЦВЕТА
- instructionEl.innerHTML = `Listen and find:         <strong>${currentColour.audio}</strong>!`;
-    
-    canInteract = false;
-    setTimeout(() => speak(`Find ${currentColour.audio}.`), 500);
-}
+        // ВЫБРАТЬ СЛУЧАЙНЫЙ ЦВЕТ (не повторяющий предыдущий)
+        function getRandomColour() {
+            let availableColours;
+            
+            // Если есть предыдущий цвет, исключаем его из выбора
+            if (previousColourName) {
+                availableColours = colours.filter(colour => colour.name !== previousColourName);
+            } else {
+                availableColours = [...colours];
+            }
+            
+            // Если почему-то остался только один цвет, используем все
+            if (availableColours.length === 0) {
+                availableColours = [...colours];
+            }
+            
+            const randomIndex = Math.floor(Math.random() * availableColours.length);
+            return availableColours[randomIndex];
+        }
+
+        // НОВЫЙ РАУНД
+        function startNewRound() {
+            // Останавливаем любую текущую речь
+            window.speechSynthesis.cancel();
+            isSpeechPlaying = false;
+            
+            // Выбираем новый цвет, не повторяющий предыдущий
+            currentColour = getRandomColour();
+            
+            // Сохраняем текущий цвет как предыдущий для следующего раунда
+            previousColourName = currentColour.name;
+            
+            // Сбрасываем сообщения
+            correctMessage.style.display = 'none';
+            wrongMessage.style.display = 'none';
+            
+            // Создаем предметы
+            createAllItems();
+            
+            // Обновляем инструкцию
+            instructionEl.innerHTML = `Listen and find:  <strong>${currentColour.audio}</strong>!`;
+            
+            // Блокируем взаимодействие
+            canInteract = false;
+            
+            // Произносим задание с небольшой задержкой
+            setTimeout(() => {
+                speak(`Find ${currentColour.audio}.`);
+            }, 500);
+        }
 
         // СОЗДАТЬ ВСЕ 6 ПРЕДМЕТОВ
         function createAllItems() {
@@ -662,44 +716,54 @@ function startNewRound() {
 
         // КЛИК ПО ПРЕДМЕТУ
         function handleItemClick(item, itemElement) {
-            if (!canInteract) return;
+            // Проверяем, можно ли взаимодействовать
+            if (!canInteract || isSpeechPlaying) return;
+            
+            // Блокируем дальнейшие клики
+            canInteract = false;
             
             if (item.colour === currentColour.name) {
+                // Правильный ответ
                 score++;
                 scoreEl.textContent = score;
                 
-                // Анимация предмета
+                // Анимация
                 itemElement.classList.add('bounce');
-                
-                // Подсветка правильного предмета
                 itemElement.style.boxShadow = `0 0 20px ${item.colourValue}, 0 10px 20px rgba(0,0,0,0.15)`;
                 
+                // Показываем сообщение
                 correctMessage.style.display = 'block';
                 
-                // Правильное аудио
+                // Произносим подтверждение
                 if (item.plural) {
                     speak(`Yes! The ${item.name} are ${currentColour.audio}!`);
                 } else {
                     speak(`Yes! The ${item.name} is ${currentColour.audio}!`);
                 }
                 
-                canInteract = false;
+                // Ждем окончания речи + дополнительное время, затем начинаем новый раунд
                 setTimeout(() => {
                     correctMessage.style.display = 'none';
                     itemElement.classList.remove('bounce');
                     itemElement.style.boxShadow = '0 6px 15px rgba(0,0,0,0.1)';
-                    startNewRound();
-                }, 1500);
+                    
+                    // Запускаем новый раунд с задержкой
+                    setTimeout(startNewRound, 800);
+                }, 2000);
+                
             } else {
+                // Неправильный ответ
                 wrongMessage.style.display = 'block';
                 itemElement.classList.add('shake');
                 
-                // Красное мигание при ошибке
+                // Красное мигание
                 const originalBorder = itemElement.style.borderColor;
                 itemElement.style.borderColor = '#ff4757';
                 
+                // Произносим сообщение об ошибке
                 speak(`No, try again! Find ${currentColour.audio}.`);
                 
+                // Восстанавливаем через секунду
                 setTimeout(() => {
                     wrongMessage.style.display = 'none';
                     itemElement.classList.remove('shake');
@@ -710,7 +774,7 @@ function startNewRound() {
 
         // КНОПКА АУДИО
         speakerBtn.onclick = function() {
-            if (currentColour) {
+            if (currentColour && !isSpeechPlaying) {
                 speak(`Find ${currentColour.audio}.`);
                 this.classList.add('bounce');
                 setTimeout(() => this.classList.remove('bounce'), 500);
