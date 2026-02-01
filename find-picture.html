@@ -347,8 +347,8 @@
         <!-- КОНТЕЙНЕР ДЛЯ КНОПОК -->
         <div class="buttons-container">
             <button class="menu-btn" onclick="window.location.href='index.html'">
-    🏠 Menu
-</button>
+                🏠 Menu
+            </button>
             
             <button class="next-btn" onclick="nextRound()">
                 Next Round ➡️
@@ -371,6 +371,7 @@
         let currentTarget = '';
         let score = 0;
         let canClick = false;
+        let lastTarget = ''; // Для отслеживания последнего слова
 
         // 3. ЭЛЕМЕНТЫ СТРАНИЦЫ
         const instructionEl = document.getElementById('instruction');
@@ -390,7 +391,10 @@
             
             utterance.onend = function() {
                 canClick = true;
-                instructionEl.innerHTML = `👉 Find: <strong>${text.split('the ')[1].toUpperCase()}</strong>`;
+                const wordToFind = text.split('the ')[1];
+                if (wordToFind) {
+                    instructionEl.innerHTML = `👉 Find: <strong>${wordToFind.toUpperCase()}</strong>`;
+                }
                 // Скрываем подсказку после нажатия на динамик
                 speakerHint.style.display = 'none';
             };
@@ -403,9 +407,14 @@
             // Показываем подсказку
             speakerHint.style.display = 'flex';
             
-            // Выбираем случайное слово
-            const randomIndex = Math.floor(Math.random() * words.length);
+            // Выбираем случайное слово, отличное от предыдущего
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * words.length);
+            } while (words[randomIndex].name === lastTarget && words.length > 1);
+            
             currentTarget = words[randomIndex].name;
+            lastTarget = currentTarget;
             
             instructionEl.innerHTML = '👇 Click the speaker button to hear the word!';
             
@@ -419,8 +428,17 @@
             picturesContainer.innerHTML = '';
             
             // 1 правильная + 3 случайные
+            let availableWords = words.filter(word => word.name !== currentTarget);
             let selectedWords = [currentTarget];
             
+            // Берем 3 случайных слова из оставшихся
+            let shuffledAvailable = shuffleArray([...availableWords]);
+            
+            for (let i = 0; i < 3 && i < shuffledAvailable.length; i++) {
+                selectedWords.push(shuffledAvailable[i].name);
+            }
+            
+            // Если все еще меньше 4 слов, добавляем случайные (может быть повтор, но это крайний случай)
             while (selectedWords.length < 4) {
                 const randomWord = words[Math.floor(Math.random() * words.length)].name;
                 if (!selectedWords.includes(randomWord)) {
@@ -477,6 +495,10 @@
                 // Только голосовая похвала
                 setTimeout(() => {
                     speak("Excellent! You found it!");
+                    // Автоматически переходим к следующему раунду через 2 секунды
+                    setTimeout(() => {
+                        startNewRound();
+                    }, 2000);
                 }, 300);
             } else {
                 // Неправильно - только голос
@@ -489,13 +511,13 @@
                 setTimeout(() => {
                     speak(`Try again! Listen for ${currentTarget}`);
                 }, 300);
+                
+                // Восстанавливаем возможность клика через 2 секунды
+                setTimeout(() => {
+                    canClick = true;
+                    instructionEl.innerHTML = `👉 Click speaker to hear again`;
+                }, 2000);
             }
-            
-            // Восстанавливаем возможность клика через 2 секунды
-            setTimeout(() => {
-                canClick = true;
-                instructionEl.innerHTML = `👉 Click speaker to hear again`;
-            }, 2000);
         }
 
         // 9. СЛЕДУЮЩИЙ РАУНД
